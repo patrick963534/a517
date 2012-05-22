@@ -1,0 +1,90 @@
+****************************************************************************************************
+yc project (yard_chat)
+
+    - target
+        ~. build a good 'reliable_udp' library.
+        ~. build a good serial servers framework.
+
+    - client functionality
+        ~. single to single. 
+        ~. group. 
+        ~. broadcast. 
+
+****************************************************************************************************
+
+Project file tree
+
+    - file tree
+
+        yard_chat/
+            .git/
+            .gitignore
+            build_all.sh
+
+            lib/
+                reliable_udp/
+                    include/
+                    src/
+
+            include/
+                package_types/
+
+            server/
+                db_server/
+                    premake.lua
+                    include/
+                    src/
+
+                gate_server/
+                    premake.lua
+                    include/
+                    src/
+
+                manager_server/
+                    premake.lua
+                    include/
+                    src/
+
+                game_server/
+                    premake.lua
+                    include/
+                    src/
+
+            client/
+                premake.lua
+                include/
+                src/
+
+****************************************************************************************************
+
+MMO network thinking
+
+    - Using pure UDP for the whole network stuff.
+        ~. we don't use pure TCP, because it blocks the game loop while there's packages missing, which isn't suitable for real time game.
+        ~. we don't use mixture UDP and TCP, because TCP and UDP are both based on IP protocol, they are mutual interference(互相干扰) on the low level.
+
+    - If we use UDP, what kinds of problems we need to resolve?
+        ~. Virtual Connection
+                It's meaningful, we only can send/recieve packages after connected each other.
+
+        ~. Custom Protocol ID
+                Because server using UDP, that means every computer can send package to it, using this 'custom protocol id' we can do 1st level filter in the GateServer before sending to Internal-Servers(ManagerServer/NameServer/GameServer/...).
+
+        ~. Determine connected or not
+                Because UDP is connected-less, we need to find a way to verify the connection is still valid.
+
+        ~. Package NOT in order
+
+        ~. Package missing
+
+        ~. Flow control
+                If we don't have any flow control, then we may send too much package data which cause fill up the bandwidth, in this way it will cause package missing easily, and you will have experience about 2s+ delay.               
+
+    - Debuging
+        ~. Replay way
+            #. Client
+                    We can save all of packages that receive from server, and add time span for the package. When debugging we don't need to connect server anymore, just read package data from the package files that we generate just now.
+
+            #. GameServer
+                    We can save all of packages that receive from client.
+
