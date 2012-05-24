@@ -24,12 +24,15 @@ Project file tree
             build_all.sh
 
             lib/
-                reliable_udp/
-                    /* virtual connection, custom protocol id, missing package. */
+                /* virtual connection, custom protocol id, missing package. */
                     include/
                         mz_socket.h
+                        libs.h
                     src/
-                        mz_socket.c
+                        rudp/
+                            mz_socket.c
+
+                        libs.c
 
             net_package/
                 include/
