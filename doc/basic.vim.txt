@@ -16,6 +16,8 @@ Project file tree
 
     - file tree
 
+        /* all type using 'mz' as prefix. */
+
         yard_chat/
             .git/
             .gitignore
@@ -23,11 +25,17 @@ Project file tree
 
             lib/
                 reliable_udp/
+                    /* virtual connection, custom protocol id, missing package. */
                     include/
+                        mz_socket.h
                     src/
+                        mz_socket.c
 
-            include/
-                package_types/
+            net_package/
+                include/
+                    mz_package_data.h
+                src/
+                    mz_package_data.c
 
             server/
                 db_server/
