@@ -27,11 +27,18 @@ Project file tree
                 /* virtual connection, custom protocol id, missing package. */
                     include/
                         mz/
-                            rudp.h
-                            libs.h
+                            libs/
+                                mz_file.h
+                                mz_log.h
+                                mz_memory.h
+                                mz_path.h
+                                mz_string.h
+                            
+                            mz_rudp.h
+                            mz_libs.h
                     src/
                         rudp/
-                            rudp.c
+                            mz_rudp.c
 
                         libs.c
 

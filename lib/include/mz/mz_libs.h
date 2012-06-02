@@ -7,5 +7,6 @@
 #include <mz/libs/mz_defs.h>
 #include <mz/libs/mz_file.h>
 #include <mz/libs/mz_string.h>
+#include <mz/libs/mz_assert.h>
 
 #endif

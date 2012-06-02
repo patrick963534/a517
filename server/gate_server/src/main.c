@@ -5,24 +5,26 @@
 
 int main(int argc, char **args)
 {
-    mz_rudp_t *me = mz_rudp_new(5000);
-    mz_rudp_addr_t *dst = mz_rudp_addr_new("127.0.0.1", YC_SERVER_PORT);
-
+    mz_rudp_t *me = mz_rudp_new(YC_SERVER_PORT);
     char buf[YC_BUFFER_SIZE] = {0};
-    int ret;
+    int ret = 0;
 
     logI("socket -> %d", me->socket_fd);
     printf("Hello World.\n");
 
+    logI("start looping");
+
     do {
-        mz_memset(buf, 0, sizeof(buf));
-        scanf("%s", buf);
-        ret = mz_rudp_send(me, buf, sizeof(buf), dst);
-        logI("send -> %s", buf);
-        logI("ret  -> %d", ret);
+        mz_memset(buf, 0, YC_BUFFER_SIZE);
+
+        if (0 != (ret = mz_rudp_recv(me, buf, YC_BUFFER_SIZE, NULL)))
+            logI("message -> %s", buf);
+
+        logI("ret -> %d", ret);
 
     } while (strcmp(buf, "quit") != 0);
 
+    logI("exit looping");
     
     return 0;
 }
