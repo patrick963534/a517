@@ -16,8 +16,8 @@ solution "yard_chat_client"
       targetdir ( "bin" )
       libdirs { "/usr/lib" }
       links { }
-      includedirs { "../lib/include" }
-      files { "../lib/**.h", "../**.c", "src/**.h", "src/**.c" }
+      includedirs { "../lib/include", "usr/include" }
+      files { "../lib/**.c", "src/**.h", "src/**.c" }
  
       configuration "Debug"
          defines { "DEBUG" }

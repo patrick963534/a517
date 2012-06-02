@@ -26,11 +26,12 @@ Project file tree
             lib/
                 /* virtual connection, custom protocol id, missing package. */
                     include/
-                        mz_socket.h
-                        libs.h
+                        mz/
+                            rudp.h
+                            libs.h
                     src/
                         rudp/
-                            mz_socket.c
+                            rudp.c
 
                         libs.c
 

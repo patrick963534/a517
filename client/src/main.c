@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include "mz_socket.h"
+#include <mz/mz_rudp.h>
 
 int main(int argc, char **args)
 {
-    rudp_socket_t *me = rudp_socket_new(3000, rudp_socket_type_client);
+    mz_rudp_t *me = mz_rudp_new(3000);
 
     printf("Hello World.\n");
 
