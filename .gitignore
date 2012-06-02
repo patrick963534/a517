@@ -1,3 +1,5 @@
 client/bin/
 client/build/
+server/*/bin/
+server/*/build/
 *.swp
