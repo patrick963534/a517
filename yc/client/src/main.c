@@ -16,7 +16,7 @@ int main(int argc, char **args)
 
     {
         int i;
-        for (i = 0; i < 100; i++) {
+        for (i = 0; i < 1000; i++) {
             mz_snprintf(buf, sizeof(buf), "good moring -> %d.", i);
             ret = mz_rudp_send(me, buf, sizeof(buf), dst);
             logI("send -> %s", buf);
