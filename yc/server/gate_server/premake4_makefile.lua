@@ -5,19 +5,19 @@ if not _PREMAKE_VERSION then
 end
 
 
-solution "yard_chat_client"
+solution "yard_chat_gate_server"
    configurations { "Debug", "Release" }
  
    -- A project defines one build target
-   project "yard_chat_client"
+   project "yard_chat_gate_server"
       kind "ConsoleApp"
       language "C"
       location ( "build" )
       targetdir ( "bin" )
       libdirs { "/usr/lib" }
       links { }
-      includedirs { "../net_package/include", "../lib/include", "usr/include" }
-      files { "../lib/**.c", "src/**.h", "src/**.c" }
+      includedirs { "../../../lib/include", "../../net_package/include", "usr/include" }
+      files { "../../../lib/**.c", "src/**.h", "src/**.c" }
  
       configuration "Debug"
          defines { "DEBUG" }
