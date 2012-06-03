@@ -6,23 +6,27 @@
 int main(int argc, char **args)
 {
     mz_rudp_t *me = mz_rudp_new(YC_SERVER_PORT);
-    char buf[YC_BUFFER_SIZE] = {0};
-    int ret = 0;
+    mz_rudp_addr_t src;
+
+    char msg[YC_BUFFER_SIZE];
+    char ip[YC_BUFFER_SIZE];
+
+    mz_rudp_set_no_blocking(me);
 
     logI("socket -> %d", me->socket_fd);
-    printf("Hello World.\n");
-
     logI("start looping");
 
     do {
-        mz_memset(buf, 0, YC_BUFFER_SIZE);
+        mz_memset(msg, 0, YC_BUFFER_SIZE);
 
-        if (0 != (ret = mz_rudp_recv(me, buf, YC_BUFFER_SIZE, NULL)))
-            logI("message -> %s", buf);
+        if (-1 != mz_rudp_recv(me, msg, YC_BUFFER_SIZE, &src)) {
+            logI("message -> %s", msg);
 
-        logI("ret -> %d", ret);
+            mz_rudp_addr_get_ip(&src, ip, sizeof(ip));
+            logI("ip is -> %s", ip);
+        }
 
-    } while (strcmp(buf, "quit") != 0);
+    } while (strcmp(msg, "quit") != 0);
 
     logI("exit looping");
     

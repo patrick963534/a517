@@ -5,4 +5,9 @@
 #define mz_unused(arg) (void)(arg)
 #define mz_downcast(type) type* me= (type*)me_
 
+#define MZ_TRUE     1
+#define MZ_FALSE    0
+
+typedef int mz_bool;
+
 #endif

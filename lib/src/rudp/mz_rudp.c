@@ -5,6 +5,27 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <fcntl.h>
+
+MZ_API void mz_rudp_set_no_blocking(mz_rudp_t *me)
+{
+    int sock = me->socket_fd;
+    int opts;
+
+    if ((opts = fcntl(sock, F_GETFL)) < 0) 
+        goto error;
+
+    opts = opts|O_NONBLOCK;
+
+    if(fcntl(sock, F_SETFL, opts) < 0)
+        goto error;
+
+    return;
+
+error:
+    logE("Fail to set non blocking for socket.");
+}
+
 
 static struct sockaddr_in get_sockaddr(int port)
 {
@@ -27,7 +48,6 @@ MZ_API mz_rudp_t* mz_rudp_new(int port)
 
     if (-1 == bind(me->socket_fd, (struct sockaddr*)&addr, sizeof(addr)))
         goto error;
-        
 
     return me;
 
@@ -72,6 +92,22 @@ MZ_API int mz_rudp_send(mz_rudp_t *me, char *buf, int sz, mz_rudp_addr_t *dst)
     ret = sendto(me->socket_fd, buf, sz, 0, (struct sockaddr*)&addr, sizeof(addr));
 
     return ret;
+}
+
+MZ_API const char* mz_rudp_addr_get_ip(mz_rudp_addr_t *me, char *buf, int sz)
+{
+    struct sockaddr_in addr; 
+    char *ip;
+
+    addr.sin_addr.s_addr = me->nl_addr;
+    addr.sin_port = me->ns_port;
+
+    // ip is a static buffer.
+    ip = inet_ntoa(addr.sin_addr);
+    
+    mz_string_copy(buf, ip, sz);
+
+    return buf;
 }
 
 MZ_API mz_rudp_addr_t* mz_rudp_addr_new(const char *address, int port)
