@@ -15,7 +15,7 @@ solution "yard_chat_client"
       location ( "build" )
       targetdir ( "bin" )
       libdirs { "/usr/lib" }
-      links { }
+      links { "rt" }
       includedirs { "../../lib/include", "../net_package/include", "usr/include" }
       files { "../../lib/**.c", "src/**.h", "src/**.c" }
  

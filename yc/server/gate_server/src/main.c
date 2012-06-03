@@ -16,15 +16,19 @@ int main(int argc, char **args)
     logI("socket -> %d", me->socket_fd);
     logI("start looping");
 
+    mz_time_sleep(10 * 1000);
+
     do {
+        int tick = mz_time_get_tick();
+
         mz_memset(msg, 0, YC_BUFFER_SIZE);
-
-        if (-1 != mz_rudp_recv(me, msg, YC_BUFFER_SIZE, &src)) {
-            logI("message -> %s", msg);
-
+        while (-1 != mz_rudp_recv(me, msg, YC_BUFFER_SIZE, &src)) {
             mz_rudp_addr_get_ip(&src, ip, sizeof(ip));
-            logI("ip is -> %s", ip);
+
+            logI("message -> %s --- ip is -> %s", msg, ip);
         }
+
+        mz_time_sleep(32 - (tick - mz_time_get_tick()));
 
     } while (strcmp(msg, "quit") != 0);
 

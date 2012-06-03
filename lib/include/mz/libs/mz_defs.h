@@ -8,6 +8,7 @@
 #define MZ_TRUE     1
 #define MZ_FALSE    0
 
-typedef int mz_bool;
+typedef int         mz_bool;
+typedef long long   mz_int64;
 
 #endif

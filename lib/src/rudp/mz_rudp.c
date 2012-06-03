@@ -96,16 +96,13 @@ MZ_API int mz_rudp_send(mz_rudp_t *me, char *buf, int sz, mz_rudp_addr_t *dst)
 
 MZ_API const char* mz_rudp_addr_get_ip(mz_rudp_addr_t *me, char *buf, int sz)
 {
-    struct sockaddr_in addr; 
-    char *ip;
+    int v = me->nl_addr;
 
-    addr.sin_addr.s_addr = me->nl_addr;
-    addr.sin_port = me->ns_port;
-
-    // ip is a static buffer.
-    ip = inet_ntoa(addr.sin_addr);
-    
-    mz_string_copy(buf, ip, sz);
+    mz_snprintf(buf, sz, "%d.%d.%d.%d", 
+                    (v&0xff), 
+                    (v&0xff00) >> 8, 
+                    (v&0xff0000) >> 16, 
+                    (v&0xff000000) >> 24); 
 
     return buf;
 }
