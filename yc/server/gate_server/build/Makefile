@@ -24,7 +24,7 @@ ifeq ($(config),debug)
   TARGETDIR  = ../bin
   TARGET     = $(TARGETDIR)/yard_chat_gate_server
   DEFINES   += -DDEBUG
-  INCLUDES  += -I../../../net_package/include -I../../../lib/include -I../usr/include
+  INCLUDES  += -I../../../../lib/include -I../../../net_package/include -I../usr/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -g
   CXXFLAGS  += $(CFLAGS) 
@@ -46,7 +46,7 @@ ifeq ($(config),release)
   TARGETDIR  = ../bin
   TARGET     = $(TARGETDIR)/yard_chat_gate_server
   DEFINES   += -DNDEBUG
-  INCLUDES  += -I../../../net_package/include -I../../../lib/include -I../usr/include
+  INCLUDES  += -I../../../../lib/include -I../../../net_package/include -I../usr/include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -O2
   CXXFLAGS  += $(CFLAGS) 
@@ -64,6 +64,7 @@ ifeq ($(config),release)
 endif
 
 OBJECTS := \
+	$(OBJDIR)/mz_rudp_manager.o \
 	$(OBJDIR)/mz_log.o \
 	$(OBJDIR)/mz_rudp.o \
 	$(OBJDIR)/main.o \
@@ -127,10 +128,13 @@ $(GCH): $(PCH)
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/mz_log.o: ../../../lib/src/libs/mz_log.c
+$(OBJDIR)/mz_rudp_manager.o: ../../../../lib/src/mz_rudp_manager.c
 	@echo $(notdir $<)
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/mz_rudp.o: ../../../lib/src/rudp/mz_rudp.c
+$(OBJDIR)/mz_log.o: ../../../../lib/src/libs/mz_log.c
+	@echo $(notdir $<)
+	$(SILENT) $(CC) $(CFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/mz_rudp.o: ../../../../lib/src/rudp/mz_rudp.c
 	@echo $(notdir $<)
 	$(SILENT) $(CC) $(CFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/main.o: ../src/main.c
