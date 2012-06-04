@@ -124,6 +124,11 @@ MZ_API const char* mz_rudp_addr_get_ip(mz_rudp_addr_t *me, char *buf, int sz)
     return buf;
 }
 
+MZ_API void mz_rudp_addr_delete(mz_rudp_addr_t *me)
+{
+    mz_free(me);
+}
+
 MZ_API mz_rudp_addr_t* mz_rudp_addr_new(const char *address, int port)
 {
     mz_rudp_addr_t *me = mz_malloc(sizeof(*me));

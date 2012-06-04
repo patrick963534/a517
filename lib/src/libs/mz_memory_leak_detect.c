@@ -3,10 +3,6 @@
 #include    <string.h>
 #include    "mz_memory_leak_detect.h"
 
-#undef      malloc
-#undef      calloc
-#undef      free
-
 static MEM_LEAK * ptr_start = NULL;
 static MEM_LEAK * ptr_next =  NULL;
 
@@ -176,30 +172,26 @@ void report_mem_leak(void)
     unsigned short index;
     MEM_LEAK * leak_info;
 
-    FILE * fp_write = fopen (OUTPUT_FILE, "wt");
-    char info[1024];
+    printf("%s\n", "-----------------------------------");
+    printf("%s\n", "Memory Leak Summary");
+    printf("%s\n", "-----------------------------------");
 
-    if(fp_write != NULL)
-    {
-        sprintf(info, "%s\n", "Memory Leak Summary");
-        fwrite(info, (strlen(info) + 1) , 1, fp_write);
-        sprintf(info, "%s\n", "-----------------------------------");   
-        fwrite(info, (strlen(info) + 1) , 1, fp_write);
-        
+    if (leak_info == NULL) {
+        printf("NO memory leak detected.\n");
+    } 
+    else {
         for(leak_info = ptr_start; leak_info != NULL; leak_info = leak_info->next)
         {
-            sprintf(info, "address : %d\n", leak_info->mem_info.address);
-            fwrite(info, (strlen(info) + 1) , 1, fp_write);
-            sprintf(info, "size    : %d bytes\n", leak_info->mem_info.size);            
-            fwrite(info, (strlen(info) + 1) , 1, fp_write);
-            sprintf(info, "file    : %s\n", leak_info->mem_info.file_name);
-            fwrite(info, (strlen(info) + 1) , 1, fp_write);
-            sprintf(info, "line    : %d\n", leak_info->mem_info.line);
-            fwrite(info, (strlen(info) + 1) , 1, fp_write);
-            sprintf(info, "%s\n", "-----------------------------------");   
-            fwrite(info, (strlen(info) + 1) , 1, fp_write);
+            printf("address : %d\n", leak_info->mem_info.address);
+            printf("size    : %d bytes\n", leak_info->mem_info.size);            
+            printf("file    : %s\n", leak_info->mem_info.file_name);
+            printf("line    : %d\n", leak_info->mem_info.line);
+            printf("%s\n", "-----------------------------------");   
         }
-    }   
+    }
+
+    fflush(stdout);
+
     clear();
 }
 

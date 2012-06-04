@@ -38,6 +38,10 @@ int main(int argc, char **args)
     } while (!mz_string_equal(msg, "quit"));
 
     logI("exit looping");
+
+    mz_rudp_delete(me);
+
+    atexit(mz_print_memory_log);
     
     return 0;
 }

@@ -16,6 +16,7 @@ typedef struct mz_rudp_t
 } mz_rudp_t;
 
 MZ_API mz_rudp_addr_t*  mz_rudp_addr_new(const char *address, int port);
+MZ_API void             mz_rudp_addr_delete(mz_rudp_addr_t *me);
 MZ_API const char*      mz_rudp_addr_get_ip(mz_rudp_addr_t *me, char *buf, int sz);
 MZ_API int              mz_rudp_addr_get_port(mz_rudp_addr_t *me);
 
