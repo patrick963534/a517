@@ -1,5 +1,45 @@
 ****************************************************************************************************
 
+communication between server and client
+
+    - send package
+        - save the package in cache
+            - wait and recieve 'arrive notification'
+                - if receive 'arrive notificication', drop the package in the cache.
+            - wait timeout (80ms)
+                - resend the package which is in the cache.
+                    - wait for 'arrive notification'
+
+    - recieve package
+        - save the package id, send 'arrive notification'
+            - if the package id is new, then process this package.
+
+    - single small package 
+            size < 3KB
+                type -> type_move_player
+                id   -> 391
+                size -> size of data
+                data -> binary data, contains information of position.
+
+    - combination packages 
+            size > 20KB, each splitted package is less than 3KB
+                type -> type_big_data
+                id   -> 318
+                totalid -> 10
+                subid-> 1 (2,3,4,...)
+                size -> size of data
+                data -> binary data ( which is actually a structure like following.)
+                        struct big_data_file
+                        {
+                            type -> type_file
+                            length -> 
+                            data -> binary data (file content)
+                        }
+                            
+                 
+            
+****************************************************************************************************
+
 how to set socket buffer size?
 
     -  int setsockopt(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
