@@ -13,8 +13,12 @@ int main(int argc, char **args)
 
     mz_rudp_set_no_blocking(me);
 
-    logI("socket -> %d", me->socket_fd);
-    logI("start looping");
+    logI("size of origin socket buffer is -> %d", mz_rudp_get_buffer_size(me));
+    mz_rudp_set_buffer_size(me, 1024);
+    logI("size of socket buffer after set is -> %d", mz_rudp_get_buffer_size(me));
+
+    logI("socket fd is -> %d", me->socket_fd);
+    logI("Server -> Start looping");
 
     do {
         int tick = mz_time_get_tick();
