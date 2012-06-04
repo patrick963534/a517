@@ -23,6 +23,7 @@ int main(int argc, char **args)
 
     } while (!mz_string_equal(buf, "quit"));
 
+    atexit(mz_print_memory_log);
     
     return 0;
 }
