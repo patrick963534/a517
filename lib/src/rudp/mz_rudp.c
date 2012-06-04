@@ -38,6 +38,20 @@ static struct sockaddr_in get_sockaddr(int port)
     return addr;
 }
 
+MZ_API int mz_rudp_set_buffer_size(mz_rudp_t *me, int new_size)
+{
+    setsockopt(me->socket_fd, SOL_SOCKET, SO_SNDBUF, &new_size, sizeof(new_size));
+}
+
+MZ_API int mz_rudp_get_buffer_size(mz_rudp_t *me)
+{
+    int buff;
+    int optlen = sizeof(buff);
+    getsockopt(me->socket_fd, SOL_SOCKET, SO_SNDBUF, &buff, &optlen);
+
+    return buff;
+}
+
 MZ_API mz_rudp_t* mz_rudp_new(int port)
 {
     mz_rudp_t *me = mz_malloc(sizeof(*me));
@@ -45,13 +59,6 @@ MZ_API mz_rudp_t* mz_rudp_new(int port)
 
     if (-1 == (me->socket_fd = socket(AF_INET, SOCK_DGRAM, 0)))
         goto error;
-
-    {
-        int buff, optlen;
-        optlen = 4;
-        getsockopt(me->socket_fd, SOL_SOCKET, SO_SNDBUF, &buff, &optlen);
-        logI("size of socket buffer is -> %d", buff);
-    }
 
     if (-1 == bind(me->socket_fd, (struct sockaddr*)&addr, sizeof(addr)))
         goto error;

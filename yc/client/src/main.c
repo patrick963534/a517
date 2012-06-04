@@ -14,15 +14,6 @@ int main(int argc, char **args)
     logI("socket -> %d", me->socket_fd);
     printf("Hello World.\n");
 
-    {
-        int i;
-        for (i = 0; i < 1000; i++) {
-            mz_snprintf(buf, sizeof(buf), "good moring -> %d.", i);
-            //ret = mz_rudp_send(me, buf, sizeof(buf), dst);
-            //logI("send -> %s", buf);
-        }
-    }
-
     do {
         mz_memset(buf, 0, sizeof(buf));
         scanf("%s", buf);

@@ -16,8 +16,6 @@ int main(int argc, char **args)
     logI("socket -> %d", me->socket_fd);
     logI("start looping");
 
-    //mz_time_sleep(10 * 1000);
-
     do {
         int tick = mz_time_get_tick();
 
@@ -25,7 +23,8 @@ int main(int argc, char **args)
         while (-1 != mz_rudp_recv(me, msg, sizeof(msg), &src)) {
             mz_rudp_addr_get_ip(&src, ip, sizeof(ip));
 
-            logI("message -> %s --- ip is -> %s:%d", msg, ip, mz_rudp_addr_get_port(&src));
+            logI("message -> %s --- ip is -> %s:%d", 
+                        msg, ip, mz_rudp_addr_get_port(&src));
         }
 
         mz_time_sleep(32 - (tick - mz_time_get_tick()));
