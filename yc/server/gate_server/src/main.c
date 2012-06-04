@@ -21,7 +21,8 @@ int main(int argc, char **args)
     logI("Server -> Start looping");
 
     do {
-        int tick = mz_time_get_tick();
+        mz_stopwatch_t watch;
+        mz_stopwatch_start(&watch);
 
         mz_memset(msg, 0, YC_BUFFER_SIZE);
         while (-1 != mz_rudp_recv(me, msg, sizeof(msg), &src)) {
@@ -31,7 +32,8 @@ int main(int argc, char **args)
                         msg, ip, mz_rudp_addr_get_port(&src));
         }
 
-        mz_time_sleep(32 - (tick - mz_time_get_tick()));
+        mz_stopwatch_stop(&watch);
+        mz_time_sleep(32 - mz_stopwatch_get_ellapse_milliseconds(&watch));
 
     } while (strcmp(msg, "quit") != 0);
 

@@ -3,24 +3,29 @@
 #include <unistd.h>
 #include <time.h>
 
+MZ_API void mz_stopwatch_start(mz_stopwatch_t *me)
+{
+    struct timespec t;
+    clock_gettime(CLOCK_REALTIME, &t);
+    me->start = t.tv_sec * 1000000 + t.tv_nsec / 1000;
+}
+
+MZ_API void mz_stopwatch_stop(mz_stopwatch_t *me)
+{
+    struct timespec t;
+    clock_gettime(CLOCK_REALTIME, &t);
+    me->end = t.tv_sec * 1000000 + t.tv_nsec / 1000;
+}
+
+MZ_API int mz_stopwatch_get_ellapse_milliseconds(mz_stopwatch_t *me)
+{
+    return (int)((me->end - me->start) / 1000);
+}
+
 MZ_API void mz_time_sleep(int milliseconds)
 {
     if (milliseconds < 0)
         return;
 
     usleep(milliseconds * 1000);
-}
-
-MZ_API mz_int64 mz_time_get_tick()
-{
-    static struct timespec init = {0, 0};
-    struct timespec t;
-
-    if (init.tv_sec == 0 && init.tv_nsec == 0) {
-        clock_gettime(CLOCK_REALTIME, &init);
-    }
-
-    clock_gettime(CLOCK_REALTIME, &t);
-
-    return (mz_int64)((t.tv_sec - init.tv_sec) * 1000 + (t.tv_nsec - init.tv_nsec) / 1000000);
 }

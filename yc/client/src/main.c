@@ -8,7 +8,7 @@ int main(int argc, char **args)
     mz_rudp_t *me = mz_rudp_new(0);
     mz_rudp_addr_t *dst = mz_rudp_addr_new("127.0.0.1", YC_SERVER_PORT);
 
-    char buf[YC_BUFFER_SIZE] = {0};
+    char buf[YC_BUFFER_SIZE];
     int ret;
 
     logI("socket -> %d", me->socket_fd);
