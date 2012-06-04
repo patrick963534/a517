@@ -21,7 +21,7 @@ int main(int argc, char **args)
         logI("send -> %s", buf);
         logI("ret  -> %d", ret);
 
-    } while (strcmp(buf, "quit") != 0);
+    } while (!mz_string_equal(buf, "quit"));
 
     
     return 0;

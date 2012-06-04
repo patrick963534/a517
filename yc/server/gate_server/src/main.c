@@ -35,7 +35,7 @@ int main(int argc, char **args)
         mz_stopwatch_stop(&watch);
         mz_time_sleep(32 - mz_stopwatch_get_ellapse_milliseconds(&watch));
 
-    } while (strcmp(msg, "quit") != 0);
+    } while (!mz_string_equal(msg, "quit"));
 
     logI("exit looping");
     

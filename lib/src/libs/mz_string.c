@@ -14,3 +14,8 @@ MZ_API const char* mz_string_copy(char *buf, const char *src, int sz)
 {
     return strncpy(buf, src, sz);
 }
+
+MZ_API mz_bool mz_string_equal(const char *str1, const char *str2)
+{
+    return strcmp(str1, str2) == 0;
+}
