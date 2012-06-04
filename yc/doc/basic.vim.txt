@@ -1,4 +1,42 @@
 ****************************************************************************************************
+
+how to set socket buffer size?
+
+    -  int setsockopt(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
+
+        ~. example:
+
+            int sendbuff = 2048;   
+            setsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, &sendbuff, sizeof(sendbuff));   
+
+    - int getsockopt(int socket, int level, int option_name, void *restrict option_value, socklen_t *restrict option_len);
+
+        ~. example:
+            int buff;
+            int optlen = sizeof(buff);
+            getsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, &buff, &optlen);   
+
+****************************************************************************************************
+
+check package send/receive state
+
+    netstat -su
+
+    - output:
+
+        Udp:
+            244 packets received
+            0 packets to unknown port received.
+            767 packet receive errors
+            1011 packets sent
+            0 receive buffer errors
+            0 send buffer errors
+        UdpLite:
+        IpExt:
+            InOctets: 216557
+            OutOctets: 161299
+
+****************************************************************************************************
 yc project (yard_chat)
 
     - target

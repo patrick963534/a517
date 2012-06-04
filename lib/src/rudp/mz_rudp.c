@@ -46,6 +46,13 @@ MZ_API mz_rudp_t* mz_rudp_new(int port)
     if (-1 == (me->socket_fd = socket(AF_INET, SOCK_DGRAM, 0)))
         goto error;
 
+    {
+        int buff, optlen;
+        optlen = 4;
+        getsockopt(me->socket_fd, SOL_SOCKET, SO_SNDBUF, &buff, &optlen);
+        logI("size of socket buffer is -> %d", buff);
+    }
+
     if (-1 == bind(me->socket_fd, (struct sockaddr*)&addr, sizeof(addr)))
         goto error;
 
@@ -76,6 +83,9 @@ MZ_API int mz_rudp_recv(mz_rudp_t *me, char *buf, int sz, mz_rudp_addr_t *src)
         src->nl_addr = from.sin_addr.s_addr;
         src->ns_port = from.sin_port;
     }
+
+    if (ret > 0 && ret != sz)
+        logI("size of receiving data is -> %d", ret);
 
     return ret;
 }
@@ -118,4 +128,9 @@ MZ_API mz_rudp_addr_t* mz_rudp_addr_new(const char *address, int port)
     me->ns_port = htons(port);
 
     return me;
+}
+
+MZ_API int mz_rudp_addr_get_port(mz_rudp_addr_t *me)
+{
+    return ntohs(me->ns_port);
 }
