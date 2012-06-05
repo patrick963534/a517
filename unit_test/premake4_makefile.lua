@@ -15,9 +15,9 @@ solution "unit_test"
       location ( "build" )
       targetdir ( "bin" )
       libdirs { "/usr/lib" }
-      links { "rt" }
-      includedirs { "../../lib/include", "usr/include" }
-      files { "../../lib/**.c", "src/**.h", "src/**.c" }
+      links { "rt", "pthread" }
+      includedirs { "../lib/include", "usr/include" }
+      files { "../lib/**.c", "src/**.h", "src/**.c" }
  
       configuration "Debug"
          defines { "DEBUG" }
