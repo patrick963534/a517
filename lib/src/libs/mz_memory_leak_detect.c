@@ -1,7 +1,7 @@
+#include    "mz_memory_leak_detect.h"
 #include    <stdio.h>
 #include    <malloc.h>
 #include    <string.h>
-#include    "mz_memory_leak_detect.h"
 
 #define  FILE_NAME_LENGTH          256
 
@@ -21,12 +21,6 @@ struct _mem_leak_t {
 typedef struct _mem_leak_t mem_leak_t;
 
 static mem_leak_t *ptr_start = NULL;
-
-static void add_mem_info(void * mem_ref, unsigned int size,  const char * file, unsigned int line);
-static void remove_mem_info (void * mem_ref);
-static void list_add(mem_info_t *info);
-static void list_erase(unsigned pos);
-static void list_clear(void);
 
 static void list_add(mem_info_t *info)
 {
@@ -81,6 +75,31 @@ static void list_clear()
     }
 }
 
+static void add_mem_info (void * mem_ref, unsigned int size,  const char * file, unsigned int line)
+{
+    mem_info_t info;
+
+    info.address = mem_ref;
+    info.size = size;
+    info.line = line;
+    strncpy(info.file_name, file, FILE_NAME_LENGTH);
+    
+    list_add(&info);
+}
+
+static void remove_mem_info(void * mem_ref)
+{
+    unsigned index;
+    mem_leak_t *leak_info = ptr_start;
+
+    for(index = 0; leak_info != NULL; ++index, leak_info = leak_info->next) {
+        if (leak_info->mem_info.address == mem_ref) {
+            list_erase(index);
+            break;
+        }
+    }
+}
+
 void * xmalloc (unsigned int size, const char * file, unsigned int line)
 {
     void * ptr = malloc (size);
@@ -118,31 +137,6 @@ void xfree(void * mem_ref)
 {
     remove_mem_info(mem_ref);
     free(mem_ref);
-}
-
-static void add_mem_info (void * mem_ref, unsigned int size,  const char * file, unsigned int line)
-{
-    mem_info_t info;
-
-    info.address = mem_ref;
-    info.size = size;
-    info.line = line;
-    strncpy(info.file_name, file, FILE_NAME_LENGTH);
-    
-    list_add(&info);
-}
-
-static void remove_mem_info(void * mem_ref)
-{
-    unsigned index;
-    mem_leak_t *leak_info = ptr_start;
-
-    for(index = 0; leak_info != NULL; ++index, leak_info = leak_info->next) {
-        if (leak_info->mem_info.address == mem_ref) {
-            list_erase(index);
-            break;
-        }
-    }
 }
 
 void report_mem_leak(void)
