@@ -1,5 +1,7 @@
-yc/client/bin/
-yc/client/build/
-yc/server/*/bin/
-yc/server/*/build/
+*/bin/
+*/build/
+*/*/bin/
+*/*/build/
+*/*/*/bin/
+*/*/*/build/
 *.swp

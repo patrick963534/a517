@@ -2,10 +2,11 @@
 
 todo
 
-    - pthread
+    - pthread (done)
     - realloc (done)
-    - list
+    - list (done)
     - warnings (done)
+    - unit-test
     - utf8
 
 ****************************************************************************************************
