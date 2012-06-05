@@ -42,3 +42,8 @@ MZ_API void mz_list_replace(mz_list_t *old, mz_list_t *_new)
     _new->prev = old->prev;
     _new->prev->next = _new;
 }
+
+MZ_API void mz_list_delete(mz_list_t *me)
+{
+    mz_free(me);
+}

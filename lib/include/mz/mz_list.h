@@ -14,6 +14,7 @@ MZ_API mz_list_t*   mz_list_new();
 MZ_API void         mz_list_add(mz_list_t *_new, mz_list_t *head);
 MZ_API void         mz_list_del(mz_list_t *entry);
 MZ_API void         mz_list_replace(mz_list_t *old, mz_list_t *_new);
+MZ_API void         mz_list_delete(mz_list_t *me);
 
 /**
 * mz_list_entry - get the struct for this entry
