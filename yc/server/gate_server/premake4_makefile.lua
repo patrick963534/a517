@@ -21,7 +21,7 @@ solution "yard_chat_gate_server"
  
       configuration "Debug"
          defines { "DEBUG" }
-         flags { "Symbols" }
+         flags { "Symbols", "ExtraWarnings" }
  
       configuration "Release"
          defines { "NDEBUG" }
