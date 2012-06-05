@@ -23,7 +23,7 @@ MZ_API void mz_list_add(mz_list_t *new, mz_list_t *head)
     prev->next = new;
 }
 
-MZ_API void mz_list_del(mz_list_t *entry)
+MZ_API void mz_list_remove(mz_list_t *entry)
 {
     mz_list_t *prev = entry->prev;
     mz_list_t *next = entry->next;
@@ -35,12 +35,12 @@ MZ_API void mz_list_del(mz_list_t *entry)
     entry->prev = (mz_list_t *) 0;
 }
 
-MZ_API void mz_list_replace(mz_list_t *old, mz_list_t *_new)
+MZ_API void mz_list_replace(mz_list_t *old, mz_list_t *new)
 {
-    _new->next = old->next;
-    _new->next->prev = _new;
-    _new->prev = old->prev;
-    _new->prev->next = _new;
+    new->next = old->next;
+    new->next->prev = new;
+    new->prev = old->prev;
+    new->prev->next = new;
 }
 
 MZ_API void mz_list_delete(mz_list_t *me)

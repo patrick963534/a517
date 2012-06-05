@@ -11,9 +11,9 @@ struct mz_list_s {
 
 
 MZ_API mz_list_t*   mz_list_new();
-MZ_API void         mz_list_add(mz_list_t *_new, mz_list_t *head);
-MZ_API void         mz_list_del(mz_list_t *entry);
-MZ_API void         mz_list_replace(mz_list_t *old, mz_list_t *_new);
+MZ_API void         mz_list_add(mz_list_t *new, mz_list_t *head);
+MZ_API void         mz_list_remove(mz_list_t *entry);
+MZ_API void         mz_list_replace(mz_list_t *old, mz_list_t *new);
 MZ_API void         mz_list_delete(mz_list_t *me);
 
 /**
