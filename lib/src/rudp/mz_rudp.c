@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 #include <netdb.h>
 #include <fcntl.h>
@@ -38,7 +39,7 @@ static struct sockaddr_in get_sockaddr(int port)
     return addr;
 }
 
-MZ_API int mz_rudp_set_buffer_size(mz_rudp_t *me, int new_size)
+MZ_API void mz_rudp_set_buffer_size(mz_rudp_t *me, int new_size)
 {
     setsockopt(me->socket_fd, SOL_SOCKET, SO_SNDBUF, &new_size, sizeof(new_size));
 }
@@ -46,7 +47,7 @@ MZ_API int mz_rudp_set_buffer_size(mz_rudp_t *me, int new_size)
 MZ_API int mz_rudp_get_buffer_size(mz_rudp_t *me)
 {
     int buff;
-    int optlen = sizeof(buff);
+    socklen_t optlen = sizeof(buff);
     getsockopt(me->socket_fd, SOL_SOCKET, SO_SNDBUF, &buff, &optlen);
 
     return buff;

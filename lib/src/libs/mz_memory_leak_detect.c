@@ -141,7 +141,6 @@ void xfree(void * mem_ref)
 
 void report_mem_leak(void)
 {
-    unsigned short index;
     mem_leak_t * leak_info;
 
     printf("%s\n", "-----------------------------------");
@@ -154,7 +153,7 @@ void report_mem_leak(void)
     else {
         for(leak_info = ptr_start; leak_info != NULL; leak_info = leak_info->next)
         {
-            printf("address : %d\n", leak_info->mem_info.address);
+            printf("address : %d\n", (int)leak_info->mem_info.address);
             printf("size    : %d bytes\n", leak_info->mem_info.size);            
             printf("file    : %s\n", leak_info->mem_info.file_name);
             printf("line    : %d\n", leak_info->mem_info.line);
