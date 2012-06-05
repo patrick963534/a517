@@ -3,8 +3,24 @@
 #include    <string.h>
 #include    "mz_memory_leak_detect.h"
 
+#define  FILE_NAME_LENGTH          256
+
+struct _MEM_INFO
+{
+    void            *address;
+    unsigned int    size;
+    char            file_name[FILE_NAME_LENGTH];
+    unsigned int    line;
+};
+typedef struct _MEM_INFO MEM_INFO;
+
+struct _MEM_LEAK {
+    MEM_INFO mem_info;
+    struct _MEM_LEAK * next;
+};
+typedef struct _MEM_LEAK MEM_LEAK;
+
 static MEM_LEAK * ptr_start = NULL;
-static MEM_LEAK * ptr_next =  NULL;
 
 static void add_mem_info(void * mem_ref, unsigned int size,  const char * file, unsigned int line);
 static void remove_mem_info (void * mem_ref);
@@ -18,7 +34,6 @@ static void clear(void);
  */
 static void add(MEM_INFO alloc_info)
 {
-
     MEM_LEAK * mem_leak_info = NULL;
     mem_leak_info = (MEM_LEAK *) malloc (sizeof(MEM_LEAK));
     mem_leak_info->mem_info.address = alloc_info.address;
@@ -30,13 +45,11 @@ static void add(MEM_INFO alloc_info)
     if (ptr_start == NULL)  
     {
         ptr_start = mem_leak_info;
-        ptr_next = ptr_start;
     }
     else {
-        ptr_next->next = mem_leak_info;
-        ptr_next = ptr_next->next;              
+        mem_leak_info->next = ptr_start;
+        ptr_start = mem_leak_info;
     }
-
 }
 
 /*
@@ -110,11 +123,26 @@ void * xcalloc (unsigned int elements, unsigned int size, const char * file, uns
     if(ptr != NULL)
     {
         total_size = elements * size;
-        add_mem_info (ptr, total_size, file, line);
+        add_mem_info(ptr, total_size, file, line);
     }
     return ptr;
 }
 
+void * xrealloc(void *src, unsigned int size, const char * file, unsigned int line)
+{
+    void * ptr;
+
+    remove_mem_info(src);
+    ptr = realloc(src, size);
+
+    if (ptr != NULL) 
+    {
+        add_mem_info(ptr, size, file, line);
+    }
+
+    return ptr;
+
+}
 
 /*
  * replacement of free
@@ -176,7 +204,7 @@ void report_mem_leak(void)
     printf("%s\n", "Memory Leak Summary");
     printf("%s\n", "-----------------------------------");
 
-    if (leak_info == NULL) {
+    if (ptr_start == NULL) {
         printf("NO memory leak detected.\n");
     } 
     else {

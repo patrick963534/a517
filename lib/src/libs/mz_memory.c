@@ -21,8 +21,7 @@ MZ_API void* mz_calloc_(int element, unsigned int size, const char * file, unsig
 
 MZ_API void* mz_realloc_(void *ptr, unsigned int size, const char * file, unsigned int line)
 {
-    logI("NOT implement mz_realloc_ yet!!!");
-    mz_assert(0);
+    xrealloc(ptr, size, file, line);
 }
 
 MZ_API void mz_free_(void *ptr)
