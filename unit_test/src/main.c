@@ -9,7 +9,7 @@ typedef void (*test_func_t)();
 typedef struct test_unit_t
 {
     test_func_t test_func;
-    mz_list_t   *element;
+    mz_list_t   element;
 } test_unit_t;
 
 static test_unit_t *root;
@@ -17,29 +17,32 @@ static int test_count;
 
 static void add_test(test_func_t func)
 {
+    test_unit_t *p1, *p2, *p3;
+
     test_unit_t *me = mz_malloc(sizeof(*me));
-    me->element = mz_list_new();
+    mz_list_init(&me->element);
     me->test_func = func;
 
-    if (root == NULL)
-        root = me;
-    else
-        mz_list_add(me->element, root->element);
+    mz_list_add(&me->element, &root->element);
 }
 
 static void run_test()
 {
-    //test_unit_t *pos;
+    test_unit_t *pos;
     test_count = 0;
 
-    //mz_list_for_each_entry(pos, root->element, test_unit_t, element) {
-    //    pos->test_func();
-    //    test_count++;
-    //}
+    mz_list_for_each_entry(pos, &root->element, test_unit_t, element) {
+        pos->test_func();
+        test_count++;
+    }
 }
 
 int main()
 {
+    root = mz_malloc(sizeof(*root));
+    mz_list_init(&root->element);
+    
+
     logI("Start Unit Test");
     logI("------------------------------");
 

@@ -9,8 +9,7 @@ struct mz_list_s {
     mz_list_t *next, *prev;
 };
 
-
-MZ_API mz_list_t*   mz_list_new();
+MZ_API void         mz_list_init(mz_list_t *me);
 MZ_API void         mz_list_add(mz_list_t *new, mz_list_t *head);
 MZ_API void         mz_list_remove(mz_list_t *entry);
 MZ_API void         mz_list_replace(mz_list_t *old, mz_list_t *new);

@@ -2,14 +2,10 @@
 #include <mz/libs/mz_memory.h>
 #include <mz/libs/mz_defs.h>
 
-MZ_API mz_list_t* mz_list_new()
+MZ_API void mz_list_init(mz_list_t *me)
 {
-    mz_list_t *me = mz_malloc(sizeof(*me));
-
     me->next = me;
     me->prev = me;
-
-    return me;
 }
 
 MZ_API void mz_list_add(mz_list_t *new, mz_list_t *head)
