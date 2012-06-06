@@ -1,4 +1,5 @@
 #include <mz/libs/mz_string.h>
+#include <mz/libs/mz_memory.h>
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -22,4 +23,13 @@ MZ_API const char* mz_string_copy(char *buf, const char *src, int sz)
 MZ_API mz_bool mz_string_equal(const char *str1, const char *str2)
 {
     return strcmp(str1, str2) == 0;
+}
+
+MZ_API char* mz_string_dup(const char *str)
+{
+    int sz = strlen(str) + 1;
+    char *v = mz_malloc(sz);
+    strncpy(v, str, sz);
+
+    return v;
 }
