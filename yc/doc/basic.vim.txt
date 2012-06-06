@@ -1,12 +1,35 @@
 ****************************************************************************************************
 
+gate_server
+
+    - msg pool
+    - each udp port corrensponding to a client.
+    - multiple socket
+        ~. 
+
+    - threads:
+        ~. main-thread
+            while (true) {
+                package = yc_msg_pool_pop_first();
+                if (package != NULL)
+                    process(package);
+                else
+                    mz_sleep(30);
+            }
+
+        ~. sub-thread
+            
+
+
+****************************************************************************************************
+
 todo
 
     - pthread (done)
     - realloc (done)
     - list (done)
     - warnings (done)
-    - unit-test
+    - unit-test (done)
     - utf8
 
 ****************************************************************************************************

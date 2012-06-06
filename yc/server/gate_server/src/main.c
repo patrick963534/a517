@@ -4,6 +4,11 @@
 #include <mz/mz_libs.h>
 #include <yc/package/yc_config.h>
 
+static void thread_run(void *arg)
+{
+
+}
+
 int main(int argc, char **args)
 {
     mz_rudp_t *me = mz_rudp_new(YC_SERVER_PORT);
