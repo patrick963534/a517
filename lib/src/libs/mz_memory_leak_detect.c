@@ -151,8 +151,11 @@ void report_mem_leak(void)
         printf("NO memory leak detected.\n");
     } 
     else {
+        int i = 0;
+
         for(leak_info = ptr_start; leak_info != NULL; leak_info = leak_info->next)
         {
+            printf("id      : %d\n", i++);
             printf("address : %d\n", (int)leak_info->mem_info.address);
             printf("size    : %d bytes\n", leak_info->mem_info.size);            
             printf("file    : %s\n", leak_info->mem_info.file_name);

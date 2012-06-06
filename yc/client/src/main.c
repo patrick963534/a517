@@ -27,7 +27,7 @@ int main(int argc, char **args)
     mz_rudp_delete(me);
     mz_rudp_addr_delete(dst);
 
-    atexit(mz_print_memory_log);
+    mz_print_memory_log();
     
     return 0;
 }

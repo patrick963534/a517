@@ -9,7 +9,7 @@
         mz_general_list_init(&ve->node);            \
         mz_general_list_add(&ve->node, &me->head)
 
-MZ_API mz_list_t*  mz_list_new(mz_list_item_type_t type)
+MZ_API mz_list_t* mz_list_new(mz_list_item_type_t type)
 {
     mz_list_t *me = mz_malloc(sizeof(*me));
     me->type = type;
@@ -42,7 +42,7 @@ MZ_API int mz_list_position(mz_list_t *me, mz_list_item_t *v)
     int i = 0;
     mz_general_list_t *pos;
 
-    mz_list_for_each(pos, &me->head) {
+    mz_general_list_for_each(pos, &me->head) {
         if (pos == &v->node) 
             return i;
         i++;
@@ -51,7 +51,7 @@ MZ_API int mz_list_position(mz_list_t *me, mz_list_item_t *v)
     return -1;
 }
 
-MZ_API void  mz_list_remove(mz_list_t *me, mz_list_item_t *v)
+MZ_API void mz_list_remove(mz_list_t *me, mz_list_item_t *v)
 {
     mz_general_list_remove(&v->node);
 
@@ -66,7 +66,7 @@ MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
     int i = 0;
     mz_general_list_t *pos;
 
-    mz_list_for_each(pos, &me->head) {
+    mz_general_list_for_each(pos, &me->head) {
         if (i == index) 
             break;
         i++;
@@ -80,9 +80,21 @@ MZ_API int mz_list_count(mz_list_t *me)
     int i = 0;
     mz_general_list_t *pos;
 
-    mz_list_for_each(pos, &me->head) {
+    mz_general_list_for_each(pos, &me->head) {
         i++;
     }
 
     return i;
+}
+
+MZ_API void mz_list_delete(mz_list_t *me)
+{
+    mz_list_item_t *pos, *next_pos;
+        
+    mz_list_for_each_entry_safe(pos, next_pos, me, mz_list_item_t) {
+        logI("remove entry");
+        //mz_list_remove(me, pos);
+    }
+
+    mz_free(me);
 }

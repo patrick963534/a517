@@ -13,11 +13,11 @@ typedef struct test_unit_t
     const char  *name;
 } test_unit_t;
 
-#define add_unit_test(root, func_name)    \
+#define add_unit_test(root, func_name, tag)    \
     {   \
         test_unit_t *me = mz_malloc(sizeof(*me));         \
         me->test_func = func_name;  \
-        me->name = "##func_name##"; \
+        me->name = tag; \
         mz_list_add_ptr_ref(root, me);                  \
     }
 
@@ -26,32 +26,39 @@ static int test_count;
 
 static void run_test()
 {
-    mz_list_item_ptr_ref_t *pos;
+    mz_list_item_ptr_ref_t *pos, *next_pos;
     test_count = 0;
 
-    mz_list_for_each_entry(pos, &root->head, mz_list_item_ptr_ref_t) {
+    mz_list_for_each_entry_safe(pos, next_pos, root, mz_list_item_ptr_ref_t) {
         test_unit_t *t = (test_unit_t*)pos->ptr_ref;
-        t->test_func();
         logI("%s", t->name);
-        test_count++;
     }
+
+    //mz_list_for_each_entry(pos, root, mz_list_item_ptr_ref_t) {
+    //    test_unit_t *t = (test_unit_t*)pos->ptr_ref;
+    //    t->test_func();
+    //    logI("%s", t->name);
+    //    test_count++;
+    //}
 }
 
 int main()
 {
-    root = mz_list_new(mz_list_item_type_ptr_ref);
+    root = mz_list_new_ptr_ref();
     
     logI("Start Unit Test");
     logI("------------------------------");
 
-    add_unit_test(root, test_assert_int_equal);
-    add_unit_test(root, test_assert_string_equal);
-    add_unit_test(root, test_list_count);
+    add_unit_test(root, test_assert_int_equal, "int equal");
+    add_unit_test(root, test_assert_string_equal, "string equal");
+    add_unit_test(root, test_list_count, "list count");
 
     run_test();
     logI("Total test: %d.", test_count);
 
     logI("------------------------------");
+
+    mz_list_delete(root);
 
     mz_print_memory_log();
     return 0;

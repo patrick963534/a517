@@ -59,12 +59,22 @@ MZ_API mz_list_item_t*    mz_list_index(mz_list_t *me, int index);
 #define mz_list_entry(ptr, type) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->node)))
 
-#define mz_list_for_each(pos, head)   \
-            for (pos = (head)->next; pos != head; pos = pos->next)
+#define mz_list_for_each_entry(pos, list_obj, type)  \
+            mz_list_for_each_entry_(pos, &list_obj->head, type)  
 
-#define mz_list_for_each_entry(pos, head, type)    \
+#define mz_list_for_each_entry_(pos, head, type)    \
     for (pos = mz_list_entry((head)->next, type);  \
         &pos->node != (head);     \
          pos = mz_list_entry(pos->node.next, type))
+
+#define mz_list_for_each_entry_safe(pos, next_pos, list_obj, type)    \
+            mz_list_for_each_entry_safe_(pos, next_pos, &list_obj->head, type)
+
+#define mz_list_for_each_entry_safe_(pos, next_pos, head, type)    \
+    for (pos = mz_list_entry((head)->next, type), \
+         next_pos = mz_list_entry(pos->node.next, type);  \
+        &pos->node != (head);     \
+         pos = next_pos,    \
+         next_pos = mz_list_entry(pos->node.next, type))
 
 #endif

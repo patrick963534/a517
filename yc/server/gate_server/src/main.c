@@ -42,7 +42,7 @@ int main(int argc, char **args)
 
     mz_rudp_delete(me);
 
-    atexit(mz_print_memory_log);
+    mz_print_memory_log();
     
     return 0;
 }
