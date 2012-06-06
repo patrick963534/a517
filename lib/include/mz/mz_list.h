@@ -50,8 +50,11 @@ MZ_API void               mz_list_add_int(mz_list_t *me, int v);
 MZ_API void               mz_list_add_string(mz_list_t *me, const char *v);
 MZ_API void               mz_list_add_ptr_ref(mz_list_t *me, void *v);
 MZ_API int                mz_list_position(mz_list_t *me, mz_list_item_t *v);
+MZ_API int                mz_list_count(mz_list_t *me);
 MZ_API void               mz_list_remove(mz_list_t *me, mz_list_item_t *v);
 MZ_API mz_list_item_t*    mz_list_index(mz_list_t *me, int index);
+
+#define mz_list_new_ptr_ref() mz_list_new(mz_list_item_type_ptr_ref)
 
 #define mz_list_entry(ptr, type) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->node)))

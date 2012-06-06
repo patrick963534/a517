@@ -3,10 +3,11 @@
 #include <mz/libs/mz_log.h>
 #include <mz/libs/mz_defs.h>
 #include "mz_memory_leak_detect.h"
+#include <stdlib.h>
 
 MZ_API void mz_print_memory_log()
 {
-    report_mem_leak();
+    atexit(report_mem_leak);
 }
 
 MZ_API void* mz_malloc_(unsigned int size, const char * file, unsigned int line)

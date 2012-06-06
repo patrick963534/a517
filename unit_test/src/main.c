@@ -3,6 +3,7 @@
 #include <mz/mz_libs.h>
 #include <mz/mz_list.h>
 #include "test_cunit.h"
+#include "test_list.h"
 
 typedef void (*test_func_t)();
 
@@ -45,10 +46,13 @@ int main()
 
     add_unit_test(root, test_assert_int_equal);
     add_unit_test(root, test_assert_string_equal);
+    add_unit_test(root, test_list_count);
 
     run_test();
     logI("Total test: %d.", test_count);
 
     logI("------------------------------");
+
+    mz_print_memory_log();
     return 0;
 }

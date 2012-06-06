@@ -75,3 +75,14 @@ MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
     return mz_list_entry(pos, mz_list_item_t);
 }
 
+MZ_API int mz_list_count(mz_list_t *me)
+{
+    int i = 0;
+    mz_general_list_t *pos;
+
+    mz_list_for_each(pos, &me->head) {
+        i++;
+    }
+
+    return i;
+}
