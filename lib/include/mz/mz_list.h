@@ -54,6 +54,8 @@ MZ_API int                mz_list_count(mz_list_t *me);
 MZ_API void               mz_list_remove(mz_list_t *me, mz_list_item_t *v);
 MZ_API mz_list_item_t*    mz_list_index(mz_list_t *me, int index);
 
+MZ_API void               mz_list_force_delete_all_ptr_ref(mz_list_t *me);
+
 #define mz_list_new_ptr_ref() mz_list_new(mz_list_item_type_ptr_ref)
 
 #define mz_list_entry(ptr, type) \

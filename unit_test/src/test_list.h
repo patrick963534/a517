@@ -22,6 +22,9 @@ void test_list_count()
     }
 
     mz_cunit_assert_int(MZ_TRUE, 5, mz_list_count(me));
+
+    mz_list_force_delete_all_ptr_ref(me);
+    mz_list_delete(me);
 }
 
 void test_list_ptr_ref_remove()

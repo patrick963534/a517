@@ -58,6 +58,7 @@ MZ_API void mz_list_remove(mz_list_t *me, mz_list_item_t *v)
     if (me->type == mz_list_item_type_string) 
         mz_free(((mz_list_item_string_t*)v)->str_value);
 
+    logI("remove entry -> %d", v);
     mz_free(v);
 }
 
@@ -92,9 +93,17 @@ MZ_API void mz_list_delete(mz_list_t *me)
     mz_list_item_t *pos, *next_pos;
         
     mz_list_for_each_entry_safe(pos, next_pos, me, mz_list_item_t) {
-        logI("remove entry");
-        //mz_list_remove(me, pos);
+        mz_list_remove(me, pos);
     }
 
     mz_free(me);
+}
+
+MZ_API void mz_list_force_delete_all_ptr_ref(mz_list_t *me)
+{
+    mz_list_item_ptr_ref_t *pos;
+
+    mz_list_for_each_entry(pos, me, mz_list_item_ptr_ref_t) {
+        mz_free(pos->ptr_ref);
+    }
 }
