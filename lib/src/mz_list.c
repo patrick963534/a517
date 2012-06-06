@@ -9,7 +9,7 @@
         mz_general_list_init(&ve->node);            \
         mz_general_list_add(&ve->node, &me->head)
 
-MZ_API mz_list_t*  mz_list_new(mz_list_element_type_t type)
+MZ_API mz_list_t*  mz_list_new(mz_list_item_type_t type)
 {
     mz_list_t *me = mz_malloc(sizeof(*me));
     me->type = type;
@@ -21,18 +21,57 @@ MZ_API mz_list_t*  mz_list_new(mz_list_element_type_t type)
 
 MZ_API void mz_list_add_int(mz_list_t *me, int v)
 {
-    create_element(ve, mz_list_element_int_t, mz_list_element_type_int);
+    create_element(ve, mz_list_item_int_t, mz_list_item_type_int);
     ve->int_value = v;
 }
 
 MZ_API void mz_list_add_string(mz_list_t *me, const char *v)
 {
-    create_element(ve, mz_list_element_string_t, mz_list_element_type_string);
+    create_element(ve, mz_list_item_string_t, mz_list_item_type_string);
     ve->str_value = mz_string_dup(v);
 }
 
 MZ_API void mz_list_add_ptr_ref(mz_list_t *me, void *v)
 {
-    create_element(ve, mz_list_element_ptr_ref_t, mz_list_element_type_ptr_ref);
+    create_element(ve, mz_list_item_ptr_ref_t, mz_list_item_type_ptr_ref);
     ve->ptr_ref = v;
 }
+
+MZ_API int mz_list_position(mz_list_t *me, mz_list_item_t *v)
+{
+    int i = 0;
+    mz_general_list_t *pos;
+
+    mz_list_for_each(pos, &me->head) {
+        if (pos == &v->node) 
+            return i;
+        i++;
+    }
+
+    return -1;
+}
+
+MZ_API void  mz_list_remove(mz_list_t *me, mz_list_item_t *v)
+{
+    mz_general_list_remove(&v->node);
+
+    if (me->type == mz_list_item_type_string) 
+        mz_free(((mz_list_item_string_t*)v)->str_value);
+
+    mz_free(v);
+}
+
+MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
+{
+    int i = 0;
+    mz_general_list_t *pos;
+
+    mz_list_for_each(pos, &me->head) {
+        if (i == index) 
+            break;
+        i++;
+    }
+
+    return mz_list_entry(pos, mz_list_item_t);
+}
+
