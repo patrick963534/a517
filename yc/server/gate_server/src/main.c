@@ -5,7 +5,7 @@
 #include <yc/package/yc_config.h>
 #include "msg_pool.h"
 
-static void thread_run(void *arg)
+static void* thread_run(void *arg)
 {
     mz_rudp_t *me;
     yc_msg_pool_t* msg_pool = (yc_msg_pool_t*)arg;
@@ -18,7 +18,7 @@ static void thread_run(void *arg)
     {
         yc_msg_pool_item_t *it1, *it2, *it3;
         mz_list_item_ptr_ref_t *pos;
-        int delay = 0;
+        int delay = 1000;
 
         it1 = yc_msg_pool_item_new("item 1 data.", mz_string_len("item 1 data.") + 1);
         it2 = yc_msg_pool_item_new("item 2 data.", mz_string_len("item 2 data.") + 1);
@@ -29,20 +29,20 @@ static void thread_run(void *arg)
         yc_msg_pool_end_queue(msg_pool, it2);
         mz_time_sleep(delay);
         yc_msg_pool_end_queue(msg_pool, it3);
-
-        mz_list_for_each_entry(pos, msg_pool->queue, mz_list_item_ptr_ref_t) {
-            yc_msg_pool_item_t *it = (yc_msg_pool_item_t*)pos->ptr_ref;
-            logI("loop queue -> %s", it->data);
-        }
     }
+
+    return NULL;
 }
 
 static void epoll_way()
 {
+    mz_thread_t *thread;
     yc_msg_pool_item_t *msg;
     yc_msg_pool_t* msg_pool;
+
     msg_pool = yc_msg_pool_new();
-    thread_run(msg_pool);
+
+    thread = mz_thread_new(thread_run, "socket_thread", msg_pool);
 
     while (1) {
         msg = yc_msg_pool_pop(msg_pool);
@@ -52,10 +52,12 @@ static void epoll_way()
             msg = NULL;
         }
         else {
-            break;
-            //mz_time_sleep(33);
+            mz_time_sleep(33);
         }
     }
+
+    mz_thread_join(thread);
+    mz_thread_delete(thread);
 
     yc_msg_pool_delete(msg_pool);
 }

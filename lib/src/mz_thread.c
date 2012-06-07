@@ -2,12 +2,13 @@
 #include <mz/mz_libs.h>
 #include <pthread.h>
 
-MZ_API mz_thread_t* mz_thread_new(mz_thread_func_t func, char *name)
+MZ_API mz_thread_t* mz_thread_new(mz_thread_func_t func, const char *name, void *arg)
 {
     mz_thread_t *me = mz_malloc(sizeof(*me));
     me->fd = mz_malloc(sizeof(pthread_t));
+    me->name = mz_string_dup(name);
 
-    pthread_create((pthread_t*)me->fd, NULL, func, name);
+    pthread_create((pthread_t*)me->fd, NULL, func, arg);
 
     return me;
 }
@@ -20,6 +21,7 @@ MZ_API void mz_thread_join(mz_thread_t *me)
 MZ_API void mz_thread_delete(mz_thread_t *me)
 {
     pthread_cancel(*((pthread_t*)me->fd));
+    mz_free(me->name);
     mz_free(me->fd);
     mz_free(me);
 }

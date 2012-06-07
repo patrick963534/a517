@@ -27,11 +27,16 @@ MZ_API mz_bool mz_string_equal(const char *str1, const char *str2)
 
 MZ_API char* mz_string_dup(const char *str)
 {
-    int sz = strlen(str) + 1;
-    char *v = mz_malloc(sz);
-    strncpy(v, str, sz);
+    if (str == NULL) {
+        return NULL;
+    }
+    else {
+        int sz = strlen(str) + 1;
+        char *v = mz_malloc(sz);
+        strncpy(v, str, sz);
 
-    return v;
+        return v;
+    }
 }
 
 MZ_API int mz_string_len(const char *str)
