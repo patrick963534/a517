@@ -1,6 +1,59 @@
 #ifndef __MSG_POOL_H__
 #define __MSG_POOL_H__
 
+#include <mz/mz_list.h>
+#include <mz/mz_thread.h>
 
+typedef struct yc_msg_pool_item_t
+{
+    char    *data;
+    int     ndata;
+} yc_msg_pool_item_t;
+
+typedef struct yc_msg_pool_t
+{
+    mz_list_t           *queue;
+    mz_thread_mutex_t   *mutex;
+} yc_msg_pool_t;
+
+yc_msg_pool_t*      yc_msg_pool_new();
+void                yc_msg_pool_end_queue(yc_msg_pool_t *me, yc_msg_pool_item_t *item);
+yc_msg_pool_item_t* yc_msg_pool_pop(yc_msg_pool_t *me);
+
+yc_msg_pool_t* yc_msg_pool_new()
+{
+    yc_msg_pool_t *me = mz_malloc(sizeof(*me));
+    me->queue = mz_list_new_ptr_ref();
+    me->mutex = mz_thread_mutex_new();
+
+    return me;
+}
+
+void yc_msg_pool_end_queue(yc_msg_pool_t *me, yc_msg_pool_item_t *item)
+{
+    mz_thread_mutex_lock(me->mutex);
+
+    mz_list_add_ptr_ref(me->queue, item);
+
+    mz_thread_mutex_unlock(me->mutex);
+}
+
+yc_msg_pool_item_t* yc_msg_pool_pop(yc_msg_pool_t *me)
+{
+    yc_msg_pool_item_t *item = NULL;
+    mz_list_item_t *first;
+
+    mz_thread_mutex_lock(me->mutex);
+
+    first = mz_list_index(me->queue, 0);
+    if (first != NULL) {
+        item = (yc_msg_pool_item_t*)((mz_list_item_ptr_ref_t*)first)->ptr_ref;
+        mz_list_remove(me->queue, first);
+    }
+    
+    mz_thread_mutex_unlock(me->mutex);
+
+    return item;
+}
 
 #endif

@@ -6,6 +6,7 @@
 
 MZ_API const char*      mz_string_copy(char *buf, const char *src, int sz);
 MZ_API char*            mz_string_dup(const char *str);
+MZ_API int              mz_string_len(const char *str);
 MZ_API char*            mz_string_chr(const char *str, int ch);
 MZ_API const char*      mz_string_token(char *str, const char *delim);
 MZ_API mz_bool          mz_string_equal(const char *str1, const char *str2);

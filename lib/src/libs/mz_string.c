@@ -33,3 +33,8 @@ MZ_API char* mz_string_dup(const char *str)
 
     return v;
 }
+
+MZ_API int mz_string_len(const char *str)
+{
+    return strlen(str);
+}

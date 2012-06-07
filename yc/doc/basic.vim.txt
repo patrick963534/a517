@@ -10,7 +10,7 @@ gate_server
     - threads:
         ~. main-thread
             while (true) {
-                package = yc_msg_pool_pop_first();
+                package = yc_msg_pool_pop(msg_pool);
                 if (package != NULL)
                     process(package);
                 else
@@ -18,7 +18,16 @@ gate_server
             }
 
         ~. sub-thread
-            
+            while (true) {
+                count_fds = epoll_wait(epfd, events, sizeof(events), 100);
+                for (i = 0; i < count_fds; i++) {
+                    if (events[i].events & EPOLLIN) {
+                        char buf[512];
+                        int sz = read_data(event[i].data.fd, buf, 512, ...); 
+                        yc_msg_pool_end_queue(msg_pool, buf, sz);
+                    }
+                }
+            }
 
 
 ****************************************************************************************************
