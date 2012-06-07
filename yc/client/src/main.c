@@ -13,6 +13,7 @@ int main(int argc, char **args)
 
     assert(me->socket_fd > 0 && me->socket_fd < 0x8fff);
 
+    logI("message buffer size -> %d", YC_BUFFER_SIZE);
 
     do {
         mz_memset(buf, 0, sizeof(buf));

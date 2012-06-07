@@ -73,6 +73,7 @@ yc_msg_pool_item_t* yc_msg_pool_item_new(const char *data, int len)
 {
     yc_msg_pool_item_t *me = mz_malloc(sizeof(*me));
     me->data = mz_malloc(len);
+    me->ndata = len;
     mz_memcpy(me->data, data, len);
 
     return me;

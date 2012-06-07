@@ -5,6 +5,11 @@
 #include <yc/package/yc_config.h>
 #include "msg_pool.h"
 
+#include <sys/epoll.h>
+#define EVENT_COUNT 20
+
+static const char *quit_string = "server_quit";
+
 static void add_preparing_msg(yc_msg_pool_t *msg_pool)
 {
     yc_msg_pool_item_t *it1, *it2, *it3;
@@ -33,6 +38,10 @@ static void* thread_run(void *arg)
 
     mz_rudp_addr_t src;
     char msg[YC_BUFFER_SIZE];
+
+    struct epoll_event ev, events[EVENT_COUNT];
+    int epfd;
+    int nfds, i;
     
     msg_pool= (yc_msg_pool_t*)arg;
     
@@ -41,21 +50,37 @@ static void* thread_run(void *arg)
     mz_rudp_set_buffer_size(rudp, 1024);
     mz_rudp_set_no_blocking(rudp);
 
+    {
+        epfd = epoll_create(256);
+        ev.data.fd = rudp->socket_fd;
+        ev.events = EPOLLIN;
+
+        epoll_ctl(epfd, EPOLL_CTL_ADD, ev.data.fd, &ev);
+    }
+
     add_preparing_msg(msg_pool);
 
     do {
         int ret_sz;
-        mz_stopwatch_t watch;
-        mz_stopwatch_start(&watch);
+        mz_bool is_quit;
 
-        while (-1 != (ret_sz = mz_rudp_recv(rudp, msg, sizeof(msg), &src))) {
-            yc_msg_pool_end_queue(msg_pool, yc_msg_pool_item_new(msg, ret_sz));
+        nfds = epoll_wait(epfd, events, EVENT_COUNT, 30);
+
+        for (i = 0; i < nfds; i++) {
+            if (events[i].data.fd == rudp->socket_fd) {
+                if (-1 != (ret_sz = mz_rudp_recv(rudp, msg, sizeof(msg), &src))) {
+                    yc_msg_pool_end_queue(msg_pool, yc_msg_pool_item_new(msg, ret_sz));
+
+                    if (!is_quit)
+                        is_quit = mz_string_equal(msg, quit_string);
+                }
+            }
         }
 
-        mz_stopwatch_stop(&watch);
-        mz_time_sleep(32 - mz_stopwatch_get_ellapse_milliseconds(&watch));
-
-    } while (!mz_string_equal(msg, "server_quit"));
+        if (is_quit)
+            break;
+        
+    } while (1);
 
     mz_rudp_delete(rudp);
 
@@ -76,8 +101,8 @@ static void epoll_way()
         msg = yc_msg_pool_pop(msg_pool);
 
         if (msg != NULL) {
-            mz_bool is_quit = mz_string_equal(msg->data, "server_quit");
-            logI("%s", msg->data);
+            mz_bool is_quit = mz_string_equal(msg->data, quit_string);
+            logI("%s -> %d", msg->data, msg->ndata);
             yc_msg_pool_item_delete(msg);
 
             if (is_quit) 
