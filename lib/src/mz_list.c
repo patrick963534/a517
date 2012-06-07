@@ -73,6 +73,9 @@ MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
         i++;
     }
 
+    if (pos == &me->head)
+        return NULL;
+
     return mz_list_entry(pos, mz_list_item_t);
 }
 

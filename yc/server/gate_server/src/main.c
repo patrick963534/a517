@@ -10,30 +10,30 @@ static void thread_run(void *arg)
     mz_rudp_t *me;
     yc_msg_pool_t* msg_pool = (yc_msg_pool_t*)arg;
     
+    mz_list_index(msg_pool->queue, 0);
     me = mz_rudp_new(YC_SERVER_PORT);
     mz_rudp_set_buffer_size(me, 1024);
     mz_rudp_set_no_blocking(me);
 
     {
         yc_msg_pool_item_t *it1, *it2, *it3;
-        it1 = mz_malloc(sizeof(*it1));
-        it2 = mz_malloc(sizeof(*it2));
-        it3 = mz_malloc(sizeof(*it3));
+        mz_list_item_ptr_ref_t *pos;
+        int delay = 0;
 
-        it1->data = mz_string_dup("item 1 data.");
-        it2->data = mz_string_dup("item 2 data.");
-        it3->data = mz_string_dup("item 3 data.");
-
-        it1->ndata = mz_string_len(it1->data) + 1;
-        it2->ndata = mz_string_len(it2->data) + 1;
-        it3->ndata = mz_string_len(it3->data) + 1;
+        it1 = yc_msg_pool_item_new("item 1 data.", mz_string_len("item 1 data.") + 1);
+        it2 = yc_msg_pool_item_new("item 2 data.", mz_string_len("item 2 data.") + 1);
+        it3 = yc_msg_pool_item_new("item 3 data.", mz_string_len("item 3 data.") + 1);
 
         yc_msg_pool_end_queue(msg_pool, it1);
-        mz_time_sleep(1000);
+        mz_time_sleep(delay);
         yc_msg_pool_end_queue(msg_pool, it2);
-        mz_time_sleep(1000);
+        mz_time_sleep(delay);
         yc_msg_pool_end_queue(msg_pool, it3);
-        mz_time_sleep(1000);
+
+        mz_list_for_each_entry(pos, msg_pool->queue, mz_list_item_ptr_ref_t) {
+            yc_msg_pool_item_t *it = (yc_msg_pool_item_t*)pos->ptr_ref;
+            logI("loop queue -> %s", it->data);
+        }
     }
 }
 
@@ -48,11 +48,16 @@ static void epoll_way()
         msg = yc_msg_pool_pop(msg_pool);
         if (msg != NULL) {
             logI("%s", msg->data);
+            yc_msg_pool_item_delete(msg);
+            msg = NULL;
         }
         else {
-            mz_time_sleep(33);
+            break;
+            //mz_time_sleep(33);
         }
     }
+
+    yc_msg_pool_delete(msg_pool);
 }
 
 static void basic_way()
@@ -92,13 +97,11 @@ static void basic_way()
     logI("exit looping");
 
     mz_rudp_delete(me);
-
-    mz_print_memory_log();
- 
 }
 
 int main(int argc, char **args)
 {
     epoll_way();  
+    mz_print_memory_log();
     return 0;
 }
