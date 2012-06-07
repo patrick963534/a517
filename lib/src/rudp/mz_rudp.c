@@ -92,9 +92,6 @@ MZ_API int mz_rudp_recv(mz_rudp_t *me, char *buf, int sz, mz_rudp_addr_t *src)
         src->ns_port = from.sin_port;
     }
 
-    if (ret > 0 && ret != sz)
-        logI("size of receiving data is -> %d", ret);
-
     return ret;
 }
 
