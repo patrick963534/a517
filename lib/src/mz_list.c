@@ -58,7 +58,6 @@ MZ_API void mz_list_remove(mz_list_t *me, mz_list_item_t *v)
     if (me->type == mz_list_item_type_string) 
         mz_free(((mz_list_item_string_t*)v)->str_value);
 
-    logI("remove entry -> %d", v);
     mz_free(v);
 }
 

@@ -11,9 +11,9 @@ static void add_preparing_msg(yc_msg_pool_t *msg_pool)
     int delay = 200;
     char *msg[3];
 
-    msg[0] = "msg: item 1 data.";
-    msg[1] = "msg: item 2 data.";
-    msg[2] = "msg: item 3 data.";
+    msg[0] = "test msg: item 1 data.";
+    msg[1] = "test msg: item 2 data.";
+    msg[2] = "test msg: item 3 data.";
 
     it1 = yc_msg_pool_item_new(msg[0], mz_string_len(msg[0]) + 1);
     it2 = yc_msg_pool_item_new(msg[1], mz_string_len(msg[1]) + 1);
@@ -48,16 +48,14 @@ static void* thread_run(void *arg)
         mz_stopwatch_t watch;
         mz_stopwatch_start(&watch);
 
-        mz_memset(msg, 0, YC_BUFFER_SIZE);
         while (-1 != (ret_sz = mz_rudp_recv(rudp, msg, sizeof(msg), &src))) {
-            yc_msg_pool_item_t *it = yc_msg_pool_item_new(msg, ret_sz);
-            yc_msg_pool_end_queue(msg_pool, it);
+            yc_msg_pool_end_queue(msg_pool, yc_msg_pool_item_new(msg, ret_sz));
         }
 
         mz_stopwatch_stop(&watch);
         mz_time_sleep(32 - mz_stopwatch_get_ellapse_milliseconds(&watch));
 
-    } while (!mz_string_equal(msg, "quit"));
+    } while (!mz_string_equal(msg, "server_quit"));
 
     mz_rudp_delete(rudp);
 
@@ -78,7 +76,7 @@ static void epoll_way()
         msg = yc_msg_pool_pop(msg_pool);
 
         if (msg != NULL) {
-            mz_bool is_quit = mz_string_equal(msg->data, "quit");
+            mz_bool is_quit = mz_string_equal(msg->data, "server_quit");
             logI("%s", msg->data);
             yc_msg_pool_item_delete(msg);
 
@@ -137,6 +135,9 @@ static void basic_way()
 
 int main(int argc, char **args)
 {
+    mz_unused(basic_way);
+    mz_unused(epoll_way);
+
     epoll_way();  
     mz_print_memory_log();
     return 0;
