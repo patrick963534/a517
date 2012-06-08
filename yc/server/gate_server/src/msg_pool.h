@@ -21,6 +21,7 @@ yc_msg_pool_item_t* yc_msg_pool_item_new(const char *data, int len);
 void                yc_msg_pool_item_delete(yc_msg_pool_item_t* me);
 
 yc_msg_pool_t*      yc_msg_pool_new();
+int                 yc_msg_pool_count(yc_msg_pool_t *me);
 void                yc_msg_pool_end_queue(yc_msg_pool_t *me, yc_msg_pool_item_t *item);
 yc_msg_pool_item_t* yc_msg_pool_pop(yc_msg_pool_t *me);
 void                yc_msg_pool_delete(yc_msg_pool_t* me);
@@ -83,6 +84,11 @@ void yc_msg_pool_item_delete(yc_msg_pool_item_t *me)
 {
     mz_free(me->data);
     mz_free(me);
+}
+
+int yc_msg_pool_count(yc_msg_pool_t *me)
+{
+    return mz_list_count(me->queue);
 }
 
 #endif

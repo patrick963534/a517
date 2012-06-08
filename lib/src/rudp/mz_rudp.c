@@ -170,6 +170,12 @@ MZ_API mz_epoll_t* mz_epoll_new()
     return me;
 }
 
+MZ_API void mz_epoll_delete(mz_epoll_t *me)
+{
+    mz_list_delete(me->rudps);
+    mz_free(me);
+}
+
 MZ_API void mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp)
 {
     struct epoll_event ev;

@@ -25,6 +25,7 @@ typedef struct mz_epoll_t
 typedef void (*mz_epoll_read_func)(mz_rudp_t *rudp, void *arg);
 
 MZ_API mz_epoll_t*  mz_epoll_new();
+MZ_API void         mz_epoll_delete(mz_epoll_t *me);
 MZ_API void         mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp);
 MZ_API void         mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func, void *arg);
 
