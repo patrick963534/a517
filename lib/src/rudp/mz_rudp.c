@@ -146,6 +146,22 @@ MZ_API int mz_rudp_addr_get_port(mz_rudp_addr_t *me)
     return ntohs(me->ns_port);
 }
 
+static mz_rudp_t* search_rudp(mz_epoll_t *me, int fd)
+{
+    //TODO: need to optimize searching algorithm.
+
+    mz_list_item_ptr_ref_t *pos;
+
+    mz_list_for_each_entry(pos, me->rudps, mz_list_item_ptr_ref_t) {
+        mz_rudp_t *rudp = (mz_rudp_t*)pos->ptr_ref;
+
+        if (rudp->socket_fd == fd)
+            return rudp;
+    }
+
+    return NULL;
+}
+
 MZ_API mz_epoll_t* mz_epoll_new()
 {
     mz_epoll_t *me = mz_malloc(sizeof(*me));
@@ -163,10 +179,11 @@ MZ_API void mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp)
     epoll_ctl(me->epoll_fd, EPOLL_CTL_ADD, ev.data.fd, &ev);
 
     mz_list_add_ptr_ref(me->rudps, rudp);
+
 }
 
 #define EVENT_COUNT 20
-MZ_API void mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func)
+MZ_API void mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func, void *arg)
 {
     struct epoll_event events[EVENT_COUNT];
     int nfds, i;
@@ -174,6 +191,16 @@ MZ_API void mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func 
     nfds = epoll_wait(me->epoll_fd, events, EVENT_COUNT, timeout);
 
     for (i = 0; i < nfds; i++) {
-        
+        mz_rudp_t *rudp;
+
+        if (events[i].events != EPOLLIN) 
+            continue;
+
+        rudp = search_rudp(me, events[i].data.fd);   
+
+        if (rudp == NULL) 
+            continue;
+
+        func(rudp, arg);
     }
 }

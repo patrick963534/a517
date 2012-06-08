@@ -31,55 +31,38 @@ static void add_preparing_msg(yc_msg_pool_t *msg_pool)
     yc_msg_pool_end_queue(msg_pool, it3);
 }
 
+static void rudp_read_data(mz_rudp_t *rudp, void *arg)
+{
+    int ret_sz;
+    char msg[YC_BUFFER_SIZE];
+    yc_msg_pool_t *msg_pool;
+    mz_rudp_addr_t src;
+    
+    msg_pool = (yc_msg_pool_t*)arg;
+
+    if (-1 != (ret_sz = mz_rudp_recv(rudp, msg, sizeof(msg), &src))) {
+        yc_msg_pool_end_queue(msg_pool, yc_msg_pool_item_new(msg, ret_sz));
+    }
+}
+
 static void* thread_run(void *arg)
 {
     mz_rudp_t *rudp;
-    yc_msg_pool_t* msg_pool;
+    mz_epoll_t *epoll;
+    yc_msg_pool_t *msg_pool;
 
-    mz_rudp_addr_t src;
-    char msg[YC_BUFFER_SIZE];
-
-    struct epoll_event ev, events[EVENT_COUNT];
-    int epfd;
-    int nfds, i;
-    
     msg_pool= (yc_msg_pool_t*)arg;
+    add_preparing_msg(msg_pool);
     
-    mz_list_index(msg_pool->queue, 0);
     rudp = mz_rudp_new(YC_SERVER_PORT);
     mz_rudp_set_buffer_size(rudp, 1024);
     mz_rudp_set_no_blocking(rudp);
 
-    {
-        epfd = epoll_create(256);
-        ev.data.fd = rudp->socket_fd;
-        ev.events = EPOLLIN;
-
-        epoll_ctl(epfd, EPOLL_CTL_ADD, ev.data.fd, &ev);
-    }
-
-    add_preparing_msg(msg_pool);
+    epoll = mz_epoll_new();
+    mz_epoll_add_readonly(epoll, rudp);
 
     do {
-        int ret_sz;
-        mz_bool is_quit;
-
-        nfds = epoll_wait(epfd, events, EVENT_COUNT, 30);
-
-        for (i = 0; i < nfds; i++) {
-            if (events[i].data.fd == rudp->socket_fd) {
-                if (-1 != (ret_sz = mz_rudp_recv(rudp, msg, sizeof(msg), &src))) {
-                    yc_msg_pool_end_queue(msg_pool, yc_msg_pool_item_new(msg, ret_sz));
-
-                    if (!is_quit)
-                        is_quit = mz_string_equal(msg, quit_string);
-                }
-            }
-        }
-
-        if (is_quit)
-            break;
-        
+        mz_epoll_block_wait(epoll, 30, rudp_read_data, msg_pool);
     } while (1);
 
     mz_rudp_delete(rudp);

@@ -26,7 +26,7 @@ typedef void (*mz_epoll_read_func)(mz_rudp_t *rudp, void *arg);
 
 MZ_API mz_epoll_t*  mz_epoll_new();
 MZ_API void         mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp);
-MZ_API void         mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func);
+MZ_API void         mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func, void *arg);
 
 MZ_API mz_rudp_addr_t*  mz_rudp_addr_new(const char *address, int port);
 MZ_API void             mz_rudp_addr_delete(mz_rudp_addr_t *me);

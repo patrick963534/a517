@@ -9,5 +9,6 @@
 #include <mz/libs/mz_string.h>
 #include <mz/libs/mz_assert.h>
 #include <mz/libs/mz_time.h>
+#include <mz/libs/mz_algorithm.h>
 
 #endif
