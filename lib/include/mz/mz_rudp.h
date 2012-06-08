@@ -2,6 +2,7 @@
 #define __MZ_RUDP_H__
 
 #include <mz/mz_libs.h>
+#include <mz/mz_list.h>
 
 typedef struct mz_rudp_addr_t
 {
@@ -14,6 +15,18 @@ typedef struct mz_rudp_t
     int socket_fd;
 
 } mz_rudp_t;
+
+typedef struct mz_epoll_t
+{
+    int         epoll_fd;
+    mz_list_t   *rudps;
+} mz_epoll_t;
+
+typedef void (*mz_epoll_read_func)(mz_rudp_t *rudp, void *arg);
+
+MZ_API mz_epoll_t*  mz_epoll_new();
+MZ_API void         mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp);
+MZ_API void         mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func);
 
 MZ_API mz_rudp_addr_t*  mz_rudp_addr_new(const char *address, int port);
 MZ_API void             mz_rudp_addr_delete(mz_rudp_addr_t *me);

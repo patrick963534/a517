@@ -1,6 +1,7 @@
 #include <mz/mz_rudp.h>
 #include <mz/mz_libs.h>
 #include <sys/socket.h>
+#include <sys/epoll.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -143,4 +144,36 @@ MZ_API mz_rudp_addr_t* mz_rudp_addr_new(const char *address, int port)
 MZ_API int mz_rudp_addr_get_port(mz_rudp_addr_t *me)
 {
     return ntohs(me->ns_port);
+}
+
+MZ_API mz_epoll_t* mz_epoll_new()
+{
+    mz_epoll_t *me = mz_malloc(sizeof(*me));
+    me->epoll_fd = epoll_create(256);
+    me->rudps = mz_list_new_ptr_ref();
+    return me;
+}
+
+MZ_API void mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp)
+{
+    struct epoll_event ev;
+    ev.data.fd = rudp->socket_fd;
+    ev.events = EPOLLIN;
+
+    epoll_ctl(me->epoll_fd, EPOLL_CTL_ADD, ev.data.fd, &ev);
+
+    mz_list_add_ptr_ref(me->rudps, rudp);
+}
+
+#define EVENT_COUNT 20
+MZ_API void mz_epoll_block_wait(mz_epoll_t *me, int timeout, mz_epoll_read_func func)
+{
+    struct epoll_event events[EVENT_COUNT];
+    int nfds, i;
+
+    nfds = epoll_wait(me->epoll_fd, events, EVENT_COUNT, timeout);
+
+    for (i = 0; i < nfds; i++) {
+        
+    }
 }

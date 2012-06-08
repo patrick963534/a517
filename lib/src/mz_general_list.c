@@ -10,8 +10,8 @@ MZ_API void mz_general_list_init(mz_general_list_t *me)
 
 MZ_API void mz_general_list_add(mz_general_list_t *new, mz_general_list_t *head)
 {
-    mz_general_list_t *prev = head;
-    mz_general_list_t *next = head->next;
+    mz_general_list_t *prev = head->prev;
+    mz_general_list_t *next = head;
 
     next->prev = new;
     new->next = next;
