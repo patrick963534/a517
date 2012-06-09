@@ -21,7 +21,7 @@ void test_list_count()
         mz_list_add_ptr_ref(me, it);
     }
 
-    mz_cunit_assert_int(MZ_TRUE, 5, mz_list_count(me));
+    mz_cunit_assert_int(MZ_TRUE, 5, me->count);
 
     mz_list_force_delete_all_ptr_ref(me);
     mz_list_delete(me);

@@ -1,0 +1,14 @@
+#echo 'compile client'
+cd yc/client
+make
+cd ../../
+
+#echo 'compile server'
+cd yc/server/gate_server
+make
+cd ../../../
+
+#echo 'compile unit_test'
+cd unit_test
+make
+cd ../
