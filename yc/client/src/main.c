@@ -12,7 +12,7 @@ static void send_test_data(mz_rudp_t *rudp, mz_rudp_addr_t *dst)
     logI("send test data.");
 
     for (i = 0; i < 20; i++) {
-        mz_snprintf(buf, sizeof(buf), "test msg: %2d", i);
+        mz_snprintf(buf, sizeof(buf), "this is test msg: %2d", i);
         mz_rudp_send(rudp, buf, strlen(buf) + 1, dst);
     }
 }
