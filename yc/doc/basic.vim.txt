@@ -1,5 +1,11 @@
 ****************************************************************************************************
 
+package types
+
+    
+
+****************************************************************************************************
+
 gate_server
 
     - msg pool
@@ -66,18 +72,18 @@ communication between server and client
 
     - combination packages 
             size > 20KB, each splitted package is less than 3KB
-                type -> type_big_data
-                id   -> 318
-                totalid -> 10
-                subid-> 1 (2,3,4,...)
-                size -> size of data
-                data -> binary data ( which is actually a structure like following.)
-                        struct big_data_file
-                        {
-                            type -> type_file
-                            length -> 
-                            data -> binary data (file content)
-                        }
+                type        -> type_big_data
+                id          -> 318
+                totalid     -> 10
+                subid       -> 1 (2,3,4,...)
+                size        -> size of data
+                data        -> binary data ( which is actually a structure like following.)
+                                    struct big_data_file
+                                    {
+                                        type -> type_file
+                                        length -> 
+                                        data -> binary data (file content)
+                                    }
                             
                  
             
