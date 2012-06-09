@@ -88,7 +88,7 @@ void yc_msg_pool_item_delete(yc_msg_pool_item_t *me)
 
 int yc_msg_pool_count(yc_msg_pool_t *me)
 {
-    return mz_list_count(me->queue);
+    return me->queue->count;
 }
 
 #endif
