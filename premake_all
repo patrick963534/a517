@@ -1,0 +1,14 @@
+#echo 'compile client'
+cd yc/client
+lua premake4_makefile.lua
+cd ../../
+
+#echo 'compile server'
+cd yc/server/gate_server
+lua premake4_makefile.lua
+cd ../../../
+
+#echo 'compile unit_test'
+cd unit_test
+lua premake4_makefile.lua
+cd ../
