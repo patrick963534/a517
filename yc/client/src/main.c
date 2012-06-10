@@ -48,6 +48,8 @@ int main(int argc, char **args)
     char buf[YC_BUFFER_SIZE];
 
     rudp = mz_rudp_new(0);
+    mz_rudp_set_buffer_size(rudp, 1024);
+    mz_rudp_set_no_blocking(rudp);
 
     assert(rudp->socket_fd > 0 && rudp->socket_fd < 0x8fff);
     logI("message buffer size -> %d", YC_BUFFER_SIZE);
