@@ -16,26 +16,26 @@ typedef struct socket_thread_data_t
     mz_bool         is_quit;
 } socket_thread_data_t;
 
-static void add_preparing_msg(yc_msg_pool_t *msg_pool)
-{
-    yc_msg_pool_item_t *it1, *it2, *it3;
-    int delay = 200;
-    char *msg[3];
-
-    msg[0] = "test msg: item 1 data.";
-    msg[1] = "test msg: item 2 data.";
-    msg[2] = "test msg: item 3 data.";
-
-    it1 = yc_msg_pool_item_new(msg[0], mz_string_len(msg[0]) + 1);
-    it2 = yc_msg_pool_item_new(msg[1], mz_string_len(msg[1]) + 1);
-    it3 = yc_msg_pool_item_new(msg[2], mz_string_len(msg[2]) + 1);
-
-    yc_msg_pool_end_queue(msg_pool, it1);
-    mz_time_sleep(delay);
-    yc_msg_pool_end_queue(msg_pool, it2);
-    mz_time_sleep(delay);
-    yc_msg_pool_end_queue(msg_pool, it3);
-}
+//static void add_preparing_msg(yc_msg_pool_t *msg_pool)
+//{
+//    yc_msg_pool_item_t *it1, *it2, *it3;
+//    int delay = 200;
+//    char *msg[3];
+//
+//    msg[0] = "test msg: item 1 data.";
+//    msg[1] = "test msg: item 2 data.";
+//    msg[2] = "test msg: item 3 data.";
+//
+//    it1 = yc_msg_pool_item_new(msg[0], mz_string_len(msg[0]) + 1);
+//    it2 = yc_msg_pool_item_new(msg[1], mz_string_len(msg[1]) + 1);
+//    it3 = yc_msg_pool_item_new(msg[2], mz_string_len(msg[2]) + 1);
+//
+//    yc_msg_pool_end_queue(msg_pool, it1);
+//    mz_time_sleep(delay);
+//    yc_msg_pool_end_queue(msg_pool, it2);
+//    mz_time_sleep(delay);
+//    yc_msg_pool_end_queue(msg_pool, it3);
+//}
 
 static void rudp_read_data(mz_rudp_t *rudp, void *arg)
 {
@@ -94,9 +94,7 @@ static void epoll_way()
     thread = mz_thread_new(thread_run, "socket_thread", td);
 
     while (1) {
-        msg = yc_msg_pool_pop(td->msg_pool);
-
-        if (msg != NULL) {
+        while (NULL != (msg = yc_msg_pool_pop(td->msg_pool))) {
             logI("%s -> %d", msg->data, msg->ndata);
             
             {
@@ -108,12 +106,11 @@ static void epoll_way()
 
             yc_msg_pool_item_delete(msg);
         }
-        else {
-            mz_time_sleep(33);
-        }
 
         if (td->is_quit && yc_msg_pool_count(td->msg_pool) == 0)
             break;
+
+        mz_time_sleep(33);
     }
 
     mz_thread_join(thread);
