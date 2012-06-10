@@ -4,11 +4,15 @@
 #include <mz/mz_list.h>
 #include <mz/mz_thread.h>
 #include <mz/mz_libs.h>
+#include <mz/mz_rudp.h>
 
 typedef struct yc_msg_pool_item_t
 {
-    char    *data;
-    int     ndata;
+    char                *data;
+    int                 ndata;
+
+    mz_rudp_addr_t      from_addr;
+    mz_rudp_t           *rudp;
 } yc_msg_pool_item_t;
 
 typedef struct yc_msg_pool_t

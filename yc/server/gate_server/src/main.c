@@ -47,7 +47,11 @@ static void rudp_read_data(mz_rudp_t *rudp, void *arg)
     td = (socket_thread_data_t*)arg;
 
     if (-1 != (ret_sz = mz_rudp_recv(rudp, msg, sizeof(msg), &src))) {
-        yc_msg_pool_end_queue(td->msg_pool, yc_msg_pool_item_new(msg, ret_sz));
+        yc_msg_pool_item_t *it = yc_msg_pool_item_new(msg, ret_sz);
+        it->rudp = rudp;
+        it->from_addr = src;
+
+        yc_msg_pool_end_queue(td->msg_pool, it);
 
         td->is_quit = mz_string_equal(msg, quit_string);
     }
@@ -60,7 +64,6 @@ static void* thread_run(void *arg)
     socket_thread_data_t *td;
 
     td = (socket_thread_data_t*)arg;
-    add_preparing_msg(td->msg_pool);
     
     rudp = mz_rudp_new(YC_SERVER_PORT);
     mz_rudp_set_buffer_size(rudp, 1024);
@@ -95,6 +98,14 @@ static void epoll_way()
 
         if (msg != NULL) {
             logI("%s -> %d", msg->data, msg->ndata);
+            
+            {
+                char buf[YC_BUFFER_SIZE];
+                mz_snprintf(buf, sizeof(buf), "\"%s\" from server replay.", msg->data);
+                logI("%s -> send to client.", buf);
+                mz_rudp_send(msg->rudp, buf, mz_string_len(buf) + 1, &msg->from_addr);
+            }
+
             yc_msg_pool_item_delete(msg);
         }
         else {
