@@ -12,8 +12,8 @@ static void send_test_data(mz_rudp_t *rudp, mz_rudp_addr_t *dst)
 
     logI("send test data.");
 
-    for (i = 0; i < 20000; i++) {
-        mz_snprintf(buf, sizeof(buf), "this is test msg: %2d", i);
+    for (i = 0; i < 200; i++) {
+        mz_snprintf(buf, sizeof(buf), "this is test msg: %-5d", i);
         mz_rudp_send(rudp, buf, strlen(buf) + 1, dst);
     }
 }
@@ -58,7 +58,7 @@ int main(int argc, char **args)
         int ret;
 
         if (-1 != (ret = mz_rudp_recv(rudp, buf, sizeof(buf), &src))) {
-            logI("recevie msg -> \"%s\"", buf);
+            logI("%s", buf);
         }
         else {
             mz_time_sleep(33);

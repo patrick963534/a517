@@ -87,6 +87,7 @@ static void epoll_way()
     mz_thread_t *thread;
     yc_msg_pool_item_t *msg;
     socket_thread_data_t *td;
+    char buf[YC_BUFFER_SIZE];
 
     td = mz_malloc(sizeof(*td));
     td->msg_pool = yc_msg_pool_new();
@@ -95,14 +96,9 @@ static void epoll_way()
 
     while (1) {
         while (NULL != (msg = yc_msg_pool_pop(td->msg_pool))) {
-            logI("%s -> %d", msg->data, msg->ndata);
-            
-            {
-                char buf[YC_BUFFER_SIZE];
-                mz_snprintf(buf, sizeof(buf), "\"%s\" from server replay.", msg->data);
-                logI("%s -> send to client.", buf);
-                mz_rudp_send(msg->rudp, buf, mz_string_len(buf) + 1, &msg->from_addr);
-            }
+            mz_snprintf(buf, sizeof(buf), "server reply: \"%s\" -> msg_pool_count:%-5d", msg->data, yc_msg_pool_count(td->msg_pool));
+            mz_rudp_send(msg->rudp, buf, mz_string_len(buf) + 1, &msg->from_addr);
+            logI("%s -> send to client.", buf);
 
             yc_msg_pool_item_delete(msg);
         }
