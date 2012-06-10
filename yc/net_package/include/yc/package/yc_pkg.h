@@ -37,7 +37,24 @@ typedef struct yc_pkg_processor_t
 
 } yc_pkg_processor_t;
 
-#define yc_pkg_add_processor(list, type_name)  \
+void get_package_processor_list()
+{
+    static mz_list *list = NULL;
+
+    if (list == NULL) {
+        list = mz_list_new_ptr_ref();
+    }
+
+    return list;
+}
+
+#define yc_pkg_register_processor(type_name)  \
+    {   \
+        mz_list_t *list = get_package_processor_list(); \
+        yc_pkg_register_processor_(list, type_name); \
+    }
+
+#define yc_pkg_register_processor_(list, type_name)  \
     {   \
         yc_pkg_processor_t *pkg = mz_malloc(sizeof(*pkg));  \
         pkg->type = yc_pkg_type_ ## type_name;   \
@@ -47,8 +64,7 @@ typedef struct yc_pkg_processor_t
 
 void init_package_processors()
 {
-    mz_list_t *list;
-    yc_pkg_add_processor(list, test_check_connect);
+    yc_pkg_register_processor(test_check_connect);
 }
 
 #endif
