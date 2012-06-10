@@ -48,7 +48,7 @@ int main(int argc, char **args)
     char buf[YC_BUFFER_SIZE];
 
     rudp = mz_rudp_new(0);
-    mz_rudp_set_buffer_size(rudp, 1024);
+    mz_rudp_set_buffer_size(rudp, YC_SOCKET_BUFFER_SIZE);
     mz_rudp_set_no_blocking(rudp);
 
     assert(rudp->socket_fd > 0 && rudp->socket_fd < 0x8fff);
@@ -59,12 +59,11 @@ int main(int argc, char **args)
     do {
         int ret;
 
-        if (-1 != (ret = mz_rudp_recv(rudp, buf, sizeof(buf), &src))) {
+        while (-1 != (ret = mz_rudp_recv(rudp, buf, sizeof(buf), &src))) {
             logI("%s", buf);
         }
-        else {
-            mz_time_sleep(33);
-        }
+
+        mz_time_sleep(33);
     } while (!mz_string_equal(buf, "client_quit"));
 
     mz_thread_join(thread);

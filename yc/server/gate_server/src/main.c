@@ -66,7 +66,7 @@ static void* thread_run(void *arg)
     td = (socket_thread_data_t*)arg;
     
     rudp = mz_rudp_new(YC_SERVER_PORT);
-    mz_rudp_set_buffer_size(rudp, 1024);
+    mz_rudp_set_buffer_size(rudp, YC_SOCKET_BUFFER_SIZE);
     mz_rudp_set_no_blocking(rudp);
 
     epoll = mz_epoll_new();
@@ -96,7 +96,11 @@ static void epoll_way()
 
     while (1) {
         while (NULL != (msg = yc_msg_pool_pop(td->msg_pool))) {
-            mz_snprintf(buf, sizeof(buf), "server reply: \"%s\" -> msg_pool_count:%-5d", msg->data, yc_msg_pool_count(td->msg_pool));
+            if (!mz_string_equal(msg->data, "client_quit"))
+                mz_snprintf(buf, sizeof(buf), "server reply: \"%s\" -> msg_pool_count:%-5d", msg->data, yc_msg_pool_count(td->msg_pool));
+            else
+                mz_snprintf(buf, sizeof(buf), "%s", msg->data);
+        
             mz_rudp_send(msg->rudp, buf, mz_string_len(buf) + 1, &msg->from_addr);
             logI("%s -> send to client.", buf);
 

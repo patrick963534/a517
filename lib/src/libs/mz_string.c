@@ -43,3 +43,8 @@ MZ_API int mz_string_len(const char *str)
 {
     return strlen(str);
 }
+
+MZ_API mz_bool mz_string_contains(const char *str, const char *target)
+{
+    return strstr(str, target) != NULL;
+}
