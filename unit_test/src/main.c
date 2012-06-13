@@ -18,7 +18,7 @@ typedef struct test_unit_t
         test_unit_t *me = mz_malloc(sizeof(*me));         \
         me->test_func = func_name;  \
         me->name = #func_name; \
-        mz_list_add_ptr_ref(root, me);                  \
+        mz_list_add(root, me);                  \
     }
 
 static mz_list_t *root;
@@ -26,10 +26,10 @@ static int test_count;
 
 static void run_test()
 {
-    mz_list_item_ptr_ref_t *pos;
+    mz_list_item_t *pos;
     test_count = 0;
 
-    mz_list_for_each_entry(pos, root, mz_list_item_ptr_ref_t) {
+    mz_list_for_each_entry(pos, root, mz_list_item_t) {
         test_unit_t *t = (test_unit_t*)pos->ptr_ref;
         t->test_func();
         logI("%s", t->name);
@@ -39,7 +39,7 @@ static void run_test()
 
 int main()
 {
-    root = mz_list_new_ptr_ref();
+    root = mz_list_new();
     
     logI("Start Unit Test");
     logI("------------------------------");
@@ -52,7 +52,7 @@ int main()
     logI("Total test: %d.", test_count);
     logI("------------------------------");
     
-    mz_list_force_delete_all_ptr_ref(root);
+    mz_list_clear(root);
     mz_list_delete(root);
 
     mz_print_memory_log();

@@ -150,9 +150,9 @@ static mz_rudp_t* search_rudp(mz_epoll_t *me, int fd)
 {
     //TODO: need to optimize searching algorithm.
 
-    mz_list_item_ptr_ref_t *pos;
+    mz_list_item_t *pos;
 
-    mz_list_for_each_entry(pos, me->rudps, mz_list_item_ptr_ref_t) {
+    mz_list_for_each_entry(pos, me->rudps, mz_list_item_t) {
         mz_rudp_t *rudp = (mz_rudp_t*)pos->ptr_ref;
 
         if (rudp->socket_fd == fd)
@@ -166,7 +166,7 @@ MZ_API mz_epoll_t* mz_epoll_new()
 {
     mz_epoll_t *me = mz_malloc(sizeof(*me));
     me->epoll_fd = epoll_create(256);
-    me->rudps = mz_list_new_ptr_ref();
+    me->rudps = mz_list_new();
     return me;
 }
 
@@ -184,7 +184,7 @@ MZ_API void mz_epoll_add_readonly(mz_epoll_t *me, mz_rudp_t *rudp)
 
     epoll_ctl(me->epoll_fd, EPOLL_CTL_ADD, ev.data.fd, &ev);
 
-    mz_list_add_ptr_ref(me->rudps, rudp);
+    mz_list_add(me->rudps, rudp);
 
 }
 

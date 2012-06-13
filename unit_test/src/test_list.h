@@ -12,18 +12,18 @@ typedef struct item_t
 
 void test_list_count()
 {
-    mz_list_t *me = mz_list_new_ptr_ref();
+    mz_list_t *me = mz_list_new();
     int i;
 
     for (i = 0; i < 5; i++) {
         item_t *it = mz_malloc(sizeof(*it));
         it->id = i;
-        mz_list_add_ptr_ref(me, it);
+        mz_list_add(me, it);
     }
 
     mz_cunit_assert_int(MZ_TRUE, 5, me->count);
 
-    mz_list_force_delete_all_ptr_ref(me);
+    mz_list_clear(me);
     mz_list_delete(me);
 }
 

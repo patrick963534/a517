@@ -18,9 +18,15 @@ MZ_API mz_list_t* mz_list_new()
     return me;
 }
 
-MZ_API void mz_list_add_ptr_ref(mz_list_t *me, void *v)
+MZ_API void mz_list_add(mz_list_t *me, void *v)
 {
-    create_element(me, ve, mz_list_item_ptr_ref_t, mz_list_item_type_ptr_ref);
+    mz_list_item_t *ve;
+
+    ve = (mz_list_item_t*)mz_malloc(sizeof(*ve));
+    mz_general_list_init(&ve->node);
+    mz_general_list_add(&ve->node, &me->head);
+    me->count++;
+
     ve->ptr_ref = v;
 }
 
@@ -74,11 +80,11 @@ MZ_API void mz_list_delete(mz_list_t *me)
     mz_free(me);
 }
 
-MZ_API void mz_list_force_delete_all_ptr_ref(mz_list_t *me)
+MZ_API void mz_list_clear(mz_list_t *me)
 {
-    mz_list_item_ptr_ref_t *pos;
+    mz_list_item_t *pos;
 
-    mz_list_for_each_entry(pos, me, mz_list_item_ptr_ref_t) {
+    mz_list_for_each_entry(pos, me, mz_list_item_t) {
         mz_free(pos->ptr_ref);
     }
 }

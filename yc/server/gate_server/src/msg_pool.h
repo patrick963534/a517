@@ -34,7 +34,7 @@ void                yc_msg_pool_delete(yc_msg_pool_t* me);
 yc_msg_pool_t* yc_msg_pool_new()
 {
     yc_msg_pool_t *me = mz_malloc(sizeof(*me));
-    me->queue = mz_list_new_ptr_ref();
+    me->queue = mz_list_new();
     me->mutex = mz_thread_mutex_new();
 
     return me;
@@ -44,7 +44,7 @@ void yc_msg_pool_end_queue(yc_msg_pool_t *me, yc_msg_pool_item_t *item)
 {
     mz_thread_mutex_lock(me->mutex);
 
-    mz_list_add_ptr_ref(me->queue, item);
+    mz_list_add(me->queue, item);
 
     mz_thread_mutex_unlock(me->mutex);
 }
@@ -58,7 +58,7 @@ yc_msg_pool_item_t* yc_msg_pool_pop(yc_msg_pool_t *me)
 
     first = mz_list_index(me->queue, 0);
     if (first != NULL) {
-        item = (yc_msg_pool_item_t*)((mz_list_item_ptr_ref_t*)first)->ptr_ref;
+        item = (yc_msg_pool_item_t*)((mz_list_item_t*)first)->ptr_ref;
         mz_list_remove(me->queue, first);
     }
     
