@@ -4,6 +4,7 @@
 #include <mz/mz_list.h>
 #include "test_cunit.h"
 #include "test_list.h"
+#include "test_dictionary.h"
 
 typedef void (*test_func_t)();
 
