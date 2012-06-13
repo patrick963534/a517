@@ -4,32 +4,18 @@
 
 #define create_element(me, ve, ve_type, t_)           \
         ve_type *ve;                                \
-        mz_assert(me->type == t_);                \
         ve = (ve_type*)mz_malloc(sizeof(*ve));      \
         mz_general_list_init(&ve->node);            \
         mz_general_list_add(&ve->node, &me->head);  \
         me->count++
 
-MZ_API mz_list_t* mz_list_new(mz_list_item_type_t type)
+MZ_API mz_list_t* mz_list_new()
 {
     mz_list_t *me = mz_malloc(sizeof(*me));
-    me->type = type;
 
     mz_general_list_init(&me->head);
 
     return me;
-}
-
-MZ_API void mz_list_add_int(mz_list_t *me, int v)
-{
-    create_element(me, ve, mz_list_item_int_t, mz_list_item_type_int);
-    ve->int_value = v;
-}
-
-MZ_API void mz_list_add_string(mz_list_t *me, const char *v)
-{
-    create_element(me, ve, mz_list_item_string_t, mz_list_item_type_string);
-    ve->str_value = mz_string_dup(v);
 }
 
 MZ_API void mz_list_add_ptr_ref(mz_list_t *me, void *v)
@@ -56,9 +42,6 @@ MZ_API void mz_list_remove(mz_list_t *me, mz_list_item_t *v)
 {
     mz_general_list_remove(&v->node);
     me->count--;
-
-    if (me->type == mz_list_item_type_string) 
-        mz_free(((mz_list_item_string_t*)v)->str_value);
 
     mz_free(v);
 }
