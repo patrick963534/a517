@@ -27,14 +27,16 @@ static int test_count;
 
 static void run_test()
 {
-    mz_list_item_t *pos;
     test_count = 0;
 
-    mz_list_for_each_entry(pos, root, mz_list_item_t) {
-        test_unit_t *t = (test_unit_t*)pos->ptr_ref;
+    mz_list_iterator_begin(root);
+    while (!mz_list_iterator_eof(root)) {
+        test_unit_t *t = (test_unit_t*)root->pos->ptr_ref;
         t->test_func();
         logI("%s", t->name);
         test_count++;
+
+        mz_list_iterator_next(root);
     }
 }
 

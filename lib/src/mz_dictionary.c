@@ -38,13 +38,15 @@ MZ_API void mz_dictionary_clear(mz_dictionary_t *me)
 
 MZ_API void* mz_dictionary_contains(mz_dictionary_t *me, const char *key)
 {
-    mz_list_item_t *pos;
-    
-    mz_list_for_each_entry(pos, me->root, mz_list_item_t)
-    {
-        mz_dictionary_item_t *it = (mz_dictionary_item_t*)pos->ptr_ref;
+    mz_list_iterator_begin(me->root);
+
+    while(me->root->pos != NULL) {
+        mz_dictionary_item_t *it = (mz_dictionary_item_t*)me->root->pos->ptr_ref;
+
         if (mz_string_equal(it->key, key))
             return it->value;
+
+        mz_list_iterator_next(me->root);
     }
 
     return NULL;
