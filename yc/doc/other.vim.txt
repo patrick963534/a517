@@ -1,0 +1,51 @@
+****************************************************************************************************
+
+screen使用
+
+    ** 管理session 
+
+    一般来说，我们不会裸起一个screen. 好的practice是每次新开一个screen，都 
+    给它取一个好记的名字: 
+
+    screen -S a_name 
+
+    下次再用screen -ls的时候就会发现它有一个名字了（就是随机数后面的那一部 
+    分）。 
+
+    以下为和管理session有关的命令： 
+
+    - 检查有多少screen session和它们的状态用screen -ls 
+    - detach一个正在跑的session用Ctrl-a d 
+    - reattach这个session用screen -r, 
+    - 如果有多个detached的session, 而我们又想attach到某一个的话，就用screen 
+    -r a_name 
+    - 在一个正在跑的session里头改名字: 先按Ctrl-a, 然后按冒号:, 出来一个类 
+    似vi的输入命令的界面，在里头运行这个内部命令：sessionname a_name 
+
+    一个很常见的情况：有时我们需要强制reattach到一个attached session，比如 
+    说忘记detach了，或者是ssh的时候网络断线了. 这个命令是: screen -RD 
+    a_name. 事实上它的实现是先给a_name session发出一个detach指令，然后在发 
+    出一个attach指令。 
+
+    ** 管理窗口 
+
+    - 生成一个新的窗口: Ctrl-a c 。这个新的窗口跑的是你的shell。 
+    - 生成一个新的窗口，并且让它跑某个指定的程序: Ctrl-a :, 然后输入: 
+    screen -t 其中是窗口的名字，是窗口号， 
+    是指定的程序。这个命令主要是在配置文件里头用。 
+    - 关闭一个窗口: 退出这个窗口的程序，则窗口自动关闭 
+    - 在无法退出某个程序的时候强制关闭一个窗口 : Ctrl-a K 
+    - 窗口列表 : Ctrl-a w 
+    - 窗口切换 : 
+    1. Ctrl-a ", 出现一个菜单可以选择 
+    2. Ctrl-a , 是从0到9的窗口ID，这个命令直接切换到第号窗口 
+    3. Ctrl-a SPACE, 下一个窗口 
+    4. Ctrl-a BACKSPACE, 前一个窗口 
+    5. Ctrl-a Ctrl-a, 在当前和前一个窗口之间转换，相当于Alt-Tab的功能 
+    - 窗口改名 : Ctrl-a A 
+
+****************************************************************************************************
+
+配置xterm
+
+    添加配置内容到文件xterm.conf中，然后使用xrdb xterm.conf来使配置生效。
