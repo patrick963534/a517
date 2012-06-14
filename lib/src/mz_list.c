@@ -71,20 +71,15 @@ MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
 
 MZ_API void mz_list_delete(mz_list_t *me)
 {
-    mz_list_item_t *pos, *next_pos;
-        
-    mz_list_for_each_entry_safe(pos, next_pos, me, mz_list_item_t) {
-        mz_list_remove(me, pos);
-    }
-
+    mz_clear(me);
     mz_free(me);
 }
 
 MZ_API void mz_list_clear(mz_list_t *me)
 {
-    mz_list_item_t *pos;
-
-    mz_list_for_each_entry(pos, me, mz_list_item_t) {
-        mz_free(pos->ptr_ref);
+    mz_list_item_t *pos, *next_pos;
+        
+    mz_list_for_each_entry_safe(pos, next_pos, me, mz_list_item_t) {
+        mz_list_remove(me, pos);
     }
 }
