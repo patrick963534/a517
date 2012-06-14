@@ -23,7 +23,7 @@ void test_list_count()
 
     mz_cunit_assert_int(MZ_TRUE, 5, me->count);
 
-    mz_list_clear(me);
+    mz_list_each_do(me, mz_free);
     mz_list_delete(me);
 }
 

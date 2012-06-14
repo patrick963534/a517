@@ -25,7 +25,7 @@ MZ_API void* mz_realloc_(void *ptr, unsigned int size, const char * file, unsign
     return xrealloc(ptr, size, file, line);
 }
 
-MZ_API void mz_free_(void *ptr)
+MZ_API void mz_free(void *ptr)
 {
     xfree(ptr);
 }

@@ -12,8 +12,10 @@ typedef struct item2_t
 
 void test_dictionary()
 {
-    mz_dictionary_t *me = mz_dictionary_new();
+    mz_dictionary_t *me;
     int i;
+
+    me = mz_dictionary_new();
 
     for (i = 0; i < 5; i++) {
         char buf[8];

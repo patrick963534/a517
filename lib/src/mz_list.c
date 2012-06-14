@@ -13,14 +13,14 @@ MZ_API mz_list_t* mz_list_new()
 
 MZ_API void mz_list_add(mz_list_t *me, void *v)
 {
-    mz_list_item_t *ve;
+    mz_list_item_t *it;
 
-    ve = (mz_list_item_t*)mz_malloc(sizeof(*ve));
-    mz_general_list_init(&ve->node);
-    mz_general_list_add(&ve->node, &me->head);
+    it = (mz_list_item_t*)mz_malloc(sizeof(*it));
+    mz_general_list_init(&it->node);
+    mz_general_list_add(&it->node, &me->head);
     me->count++;
 
-    ve->ptr_ref = v;
+    it->ptr_ref = v;
 }
 
 MZ_API int mz_list_position(mz_list_t *me, mz_list_item_t *v)
@@ -74,5 +74,14 @@ MZ_API void mz_list_clear(mz_list_t *me)
         
     mz_list_for_each_entry_safe(pos, next_pos, me, mz_list_item_t) {
         mz_list_remove(me, pos);
+    }
+}
+
+MZ_API void mz_list_each_do(mz_list_t *me, mz_list_do_func func)
+{
+    mz_list_item_t *pos, *next_pos;
+        
+    mz_list_for_each_entry_safe(pos, next_pos, me, mz_list_item_t) {
+        func(pos->ptr_ref);
     }
 }

@@ -53,7 +53,7 @@ int main()
     logI("Total test: %d.", test_count);
     logI("------------------------------");
     
-    mz_list_clear(root);
+    mz_list_each_do(root, mz_free);
     mz_list_delete(root);
 
     mz_print_memory_log();
