@@ -2,13 +2,6 @@
 #include <mz/mz_general_list.h>
 #include <mz/mz_libs.h>
 
-#define create_element(me, ve, ve_type, t_)           \
-        ve_type *ve;                                \
-        ve = (ve_type*)mz_malloc(sizeof(*ve));      \
-        mz_general_list_init(&ve->node);            \
-        mz_general_list_add(&ve->node, &me->head);  \
-        me->count++
-
 MZ_API mz_list_t* mz_list_new()
 {
     mz_list_t *me = mz_malloc(sizeof(*me));
@@ -71,7 +64,7 @@ MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
 
 MZ_API void mz_list_delete(mz_list_t *me)
 {
-    mz_clear(me);
+    mz_list_clear(me);
     mz_free(me);
 }
 

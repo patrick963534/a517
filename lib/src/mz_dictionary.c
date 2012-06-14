@@ -4,7 +4,7 @@ typedef struct mz_dictionary_item_t
 {
     char          *key;
     const void    *value;
-} mz_directory_item_t;
+} mz_dictionary_item_t;
 
 MZ_API mz_dictionary_t* mz_dictionary_new()
 {
