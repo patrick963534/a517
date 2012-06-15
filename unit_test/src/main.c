@@ -50,6 +50,7 @@ int main()
     add_unit_test(root, test_assert_int_equal);
     add_unit_test(root, test_assert_string_equal);
     add_unit_test(root, test_list_count);
+    add_unit_test(root, test_list_index);
 
     run_test();
     logI("Total test: %d.", test_count);
