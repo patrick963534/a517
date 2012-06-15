@@ -27,4 +27,9 @@ MZ_API void             mz_list_iterator_next(mz_list_t *me);
 MZ_API mz_bool          mz_list_iterator_eof(mz_list_t *me);
 MZ_API void*            mz_list_iterator_current(mz_list_t *me);
 
+MZ_API void*            mz_list_get_first(mz_list_t *me);
+MZ_API void*            mz_list_get_last(mz_list_t *me);
+MZ_API void             mz_list_remove_first(mz_list_t *me);
+MZ_API void             mz_list_remove_last(mz_list_t *me);
+
 #endif

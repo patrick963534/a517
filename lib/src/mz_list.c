@@ -144,3 +144,51 @@ MZ_API void* mz_list_iterator_current(mz_list_t *me)
     it = mz_list_entry(me->pos, mz_list_item_t);
     return it->ptr_ref;
 }
+
+MZ_API void* mz_list_get_first(mz_list_t *me)
+{
+    mz_list_item_t *it;
+
+    if (&me->head == me->head.next)
+        return NULL;
+
+    it = mz_list_entry(me->head.next, mz_list_item_t);
+    return it->ptr_ref;
+}
+
+MZ_API void* mz_list_get_last(mz_list_t *me)
+{
+    mz_list_item_t *it;
+
+    if (&me->head == me->head.prev)
+        return NULL;
+
+    it = mz_list_entry(me->head.prev, mz_list_item_t);
+    return it->ptr_ref;
+}
+
+MZ_API void mz_list_remove_first(mz_list_t *me)
+{
+    mz_list_item_t *it;
+
+    if (&me->head == me->head.next)
+        return;
+
+    it = mz_list_entry(me->head.next, mz_list_item_t);
+    mz_general_list_remove(me->head.next);
+    mz_free(it);
+    me->count--;
+}
+
+MZ_API void mz_list_remove_last(mz_list_t *me)
+{
+    mz_list_item_t *it;
+
+    if (&me->head == me->head.prev)
+        return;
+
+    it = mz_list_entry(me->head.prev, mz_list_item_t);
+    mz_general_list_remove(me->head.prev);
+    mz_free(it);
+    me->count--;
+}

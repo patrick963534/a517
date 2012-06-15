@@ -15,4 +15,4 @@ MZ_API void         mz_queue_push(mz_queue_t *me, void *value);
 MZ_API void*        mz_queue_pop(mz_queue_t *me);
 MZ_API void         mz_queue_clear(mz_queue_t *me);
 
-#enfi
+#endif
