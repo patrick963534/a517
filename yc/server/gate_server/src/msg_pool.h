@@ -52,15 +52,14 @@ void yc_msg_pool_end_queue(yc_msg_pool_t *me, yc_msg_pool_item_t *item)
 yc_msg_pool_item_t* yc_msg_pool_pop(yc_msg_pool_t *me)
 {
     yc_msg_pool_item_t *item = NULL;
-    mz_list_item_t *first;
+
+    if (me->queue->count == 0)
+        return NULL;
 
     mz_thread_mutex_lock(me->mutex);
 
-    first = mz_list_index(me->queue, 0);
-    if (first != NULL) {
-        item = (yc_msg_pool_item_t*)((mz_list_item_t*)first)->ptr_ref;
-        mz_list_remove(me->queue, first);
-    }
+    if (NULL != (item = (yc_msg_pool_item_t*)mz_list_index(me->queue, 0)))
+        mz_list_remove(me->queue, item);
     
     mz_thread_mutex_unlock(me->mutex);
 

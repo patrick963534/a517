@@ -39,13 +39,8 @@ void test_list_index()
         mz_list_add(me, it);
     }
 
-    {
-        mz_list_item_t *item;
-        for (i = 0; i < count; i++) {
-            item =  mz_list_index(me, i);
-            mz_cunit_assert_int(MZ_TRUE, i, ((item_t*)item->ptr_ref)->id);
-        }
-    }
+    for (i = 0; i < count; i++) 
+        mz_cunit_assert_int(MZ_TRUE, i, ((item_t*)mz_list_index(me, i))->id);
 
     mz_list_each_do(me, mz_free);
     mz_list_delete(me);

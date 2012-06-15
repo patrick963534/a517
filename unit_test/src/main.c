@@ -27,11 +27,12 @@ static int test_count;
 
 static void run_test()
 {
+    test_unit_t *t;
     test_count = 0;
 
     mz_list_iterator_begin(root);
     while (!mz_list_iterator_eof(root)) {
-        test_unit_t *t = (test_unit_t*)root->pos->ptr_ref;
+        t = (test_unit_t*)mz_list_iterator_current(root);
         t->test_func();
         logI("%s", t->name);
         test_count++;
