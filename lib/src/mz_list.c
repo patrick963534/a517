@@ -29,14 +29,16 @@ MZ_API void mz_list_add(mz_list_t *me, void *v)
 MZ_API int mz_list_position(mz_list_t *me, mz_list_item_t *v)
 {
     int i = 0;
-    mz_general_list_t *pos;
 
-    mz_general_list_for_each(pos, &me->head) {
-        if (pos == &v->node) 
+    mz_list_iterator_begin(me);
+    while (!mz_list_iterator_eof(me)) {
+        if (me->pos == v)
             return i;
+
+        mz_list_iterator_next(me);
         i++;
     }
-
+    
     return -1;
 }
 
@@ -51,18 +53,17 @@ MZ_API void mz_list_remove(mz_list_t *me, mz_list_item_t *v)
 MZ_API mz_list_item_t* mz_list_index(mz_list_t *me, int index)
 {
     int i = 0;
-    mz_general_list_t *pos;
 
-    mz_general_list_for_each(pos, &me->head) {
-        if (i == index) 
-            break;
+    mz_list_iterator_begin(me);
+    while (!mz_list_iterator_eof(me)) {
+        if (i == index)
+            return me->pos;
+
+        mz_list_iterator_next(me);
         i++;
     }
 
-    if (pos == &me->head)
-        return NULL;
-
-    return mz_list_entry(pos, mz_list_item_t);
+    return NULL;
 }
 
 MZ_API void mz_list_delete(mz_list_t *me)
@@ -73,15 +74,19 @@ MZ_API void mz_list_delete(mz_list_t *me)
 
 MZ_API void mz_list_clear(mz_list_t *me)
 {
-    for (mz_list_iterator_begin(me); me->pos != NULL; mz_list_iterator_next(me)) {
+    mz_list_iterator_begin(me);
+    while (!mz_list_iterator_eof(me)) {
         mz_list_remove(me, me->pos);
+        mz_list_iterator_next(me);
     }
 }
 
 MZ_API void mz_list_each_do(mz_list_t *me, mz_list_do_func func)
 {
-    for (mz_list_iterator_begin(me); me->pos != NULL; mz_list_iterator_next(me)) {
+    mz_list_iterator_begin(me);
+    while (!mz_list_iterator_eof(me)) {
         func(me->pos->ptr_ref);
+        mz_list_iterator_next(me);
     }
 }
 

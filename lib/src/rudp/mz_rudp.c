@@ -151,7 +151,7 @@ static mz_rudp_t* search_rudp(mz_epoll_t *me, int fd)
     //TODO: need to optimize searching algorithm.
 
     mz_list_iterator_begin(me->rudps);
-    while (me->rudps->pos != NULL) {
+    while (!mz_list_iterator_eof(me->rudps)) {
         mz_rudp_t *rudp = (mz_rudp_t*)me->rudps->pos->ptr_ref;
 
         if (rudp->socket_fd == fd)
