@@ -12,3 +12,5 @@ cd ../../../
 cd unit_test
 make
 cd ../
+
+./unit_test/bin/unit_test
