@@ -1,5 +1,19 @@
 ****************************************************************************************************
 
+send and reliable-send
+
+    - for ACK use send
+
+    - for package data, use reliable-send.
+        - re-send cache size?
+        - no cache?
+        - blocking send?
+            if it's a blocking send, then have to wait until recieving ACK before sending next package. 
+        - there's property to let developer set whether to wait to make sure every package to be send or ignore new packages when the sending cache is full.
+          
+
+****************************************************************************************************
+
 package types
 
     
