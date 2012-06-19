@@ -1,5 +1,11 @@
 ****************************************************************************************************
 
+    - need to loop through dozens of clients' rudp. (World chat.)
+    - need to process hundreds kind of package.
+    - need to ...
+
+****************************************************************************************************
+
 send and reliable-send
 
     - for ACK use send
