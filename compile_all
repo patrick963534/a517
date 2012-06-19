@@ -13,4 +13,14 @@ cd unit_test
 make
 cd ../
 
+#echo 'compile minibox'
+cd minibox
+make
+cd ../
+
+#echo 'compile tsp_demo'
+cd tsp_demo
+make
+cd ../
+
 ./unit_test/bin/unit_test
