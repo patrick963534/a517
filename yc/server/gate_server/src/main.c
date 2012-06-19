@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <mz/mz_rudp.h>
 #include <mz/mz_libs.h>
-#include <yc/package/yc_config.h>
+#include <yc/yc_package.h>
 #include "msg_pool.h"
 
 #include <sys/epoll.h>
