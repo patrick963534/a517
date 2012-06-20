@@ -30,10 +30,35 @@ MZ_API void mz_dictionary_add(mz_dictionary_t *me, const char *key, void *value)
 
     mz_list_add(me->root, it);
 }
+MZ_API void mz_dictionary_each_do(mz_dictionary_t *me, mz_dictionary_each_do_func func)
+{
+    mz_dictionary_item_t *it;
+
+    mz_list_iterator_begin(me->root);
+
+    while(!mz_list_iterator_eof(me->root)) {
+        it = (mz_dictionary_item_t*)mz_list_iterator_current(me->root);
+        func(it->value);
+        mz_list_iterator_next(me->root);
+    }
+
+}
 
 MZ_API void mz_dictionary_clear(mz_dictionary_t *me)
 {
-    mz_list_clear(me->root);
+    mz_dictionary_item_t *it;
+
+    mz_list_iterator_begin(me->root);
+
+    while(!mz_list_iterator_eof(me->root)) {
+        it = (mz_dictionary_item_t*)mz_list_iterator_current(me->root);
+
+        mz_list_remove(me->root, it);
+        mz_free(it->key);
+        mz_free(it);
+
+        mz_list_iterator_next(me->root);
+    }
 }
 
 MZ_API void* mz_dictionary_contains(mz_dictionary_t *me, const char *key)
@@ -60,11 +85,15 @@ MZ_API void mz_dictionary_remove(mz_dictionary_t *me, const char *key)
 
     mz_list_iterator_begin(me->root);
 
-    while(mz_list_iterator_eof(me->root)) {
+    while(!mz_list_iterator_eof(me->root)) {
         it = (mz_dictionary_item_t*)mz_list_iterator_current(me->root);
 
-        if (mz_strequal(it->key, key))
-            mz_list_remove(me->root, me->root->pos);
+        if (mz_strequal(it->key, key)) {
+            mz_list_remove(me->root, it);
+            mz_free(it->key);
+            mz_free(it);
+            return;
+        }
 
         mz_list_iterator_next(me->root);
     }

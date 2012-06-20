@@ -27,6 +27,7 @@ void test_dictionary()
 
     mz_cunit_assert_string(MZ_TRUE, "2", (char*)mz_dictionary_contains(me, "2"));
 
+    mz_dictionary_each_do(me, mz_free);
     mz_dictionary_delete(me);
 }
 
