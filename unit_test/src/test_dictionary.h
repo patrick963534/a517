@@ -25,7 +25,7 @@ void test_dictionary()
         mz_dictionary_add(me, buf, it);
     }
 
-    //mz_cunit_assert_int(MZ_TRUE, 5, me->count);
+    mz_cunit_assert_string(MZ_TRUE, "2", (char*)mz_dictionary_contains(me, "2"));
 
     mz_dictionary_delete(me);
 }

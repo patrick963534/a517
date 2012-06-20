@@ -1,6 +1,7 @@
 #include <gtk/gtk.h>
 #include <mz/mz_path.h>
 #include <mz/mz_list.h>
+#include <mz/mz_dictionary.h>
 
 enum list_type_t
 {
@@ -114,14 +115,21 @@ static void view_row_activated (GtkTreeView        *treeview,
     }
 }
 
+static mz_dictionary_t *builders;
+
 static GObject* get_object_from_glade(const char *filepath, const char *obj_name)
 {
     GtkBuilder *builder;
     GObject    *obj;
     GError     *err = NULL;
 
-    builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, filepath, &err);
+    builder = (GtkBuilder*)mz_dictionary_contains(builders, filepath);
+
+    if (!builder) {
+        builder = gtk_builder_new();
+        gtk_builder_add_from_file(builder, filepath, &err);
+        mz_dictionary_add(builders, filepath, builder);
+    }
 
     obj = gtk_builder_get_object(builder, obj_name);
 
@@ -181,6 +189,8 @@ int main(int argc, char *argv[])
         g_print("%s\n", (char*)mz_list_iterator_current(list));
         mz_list_iterator_next(list);
     }
+
+    builders = mz_dictionary_new();
 
     gtk_init(&argc, &argv);
 

@@ -42,7 +42,7 @@ MZ_API void* mz_dictionary_contains(mz_dictionary_t *me, const char *key)
 
     mz_list_iterator_begin(me->root);
 
-    while(mz_list_iterator_eof(me->root)) {
+    while(!mz_list_iterator_eof(me->root)) {
         it = (mz_dictionary_item_t*)mz_list_iterator_current(me->root);
 
         if (mz_strequal(it->key, key))

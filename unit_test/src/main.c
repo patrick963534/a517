@@ -6,6 +6,7 @@
 #include "test_list.h"
 #include "test_dictionary.h"
 #include "test_queue.h"
+#include "test_dictionary.h"
 
 typedef void (*test_func_t)();
 
@@ -54,6 +55,7 @@ int main()
     add_unit_test(root, test_list_count);
     add_unit_test(root, test_list_index);
     add_unit_test(root, test_queue_push_and_pop);
+    add_unit_test(root, test_dictionary);
 
     run_test();
     logI("Total test: %d.", test_count);
