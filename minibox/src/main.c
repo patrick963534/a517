@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <gtk/gtk.h>
 
 enum list_type_t
@@ -33,7 +32,6 @@ static void add_columns(GtkTreeView *treeview)
 {
     GtkCellRenderer *renderer;
     GtkTreeViewColumn *column;
-    //GtkTreeModel *model = gtk_tree_view_get_model(treeview);
 
     renderer = gtk_cell_renderer_text_new();
     column = gtk_tree_view_column_new_with_attributes ("Description", renderer, "text", COLUMN_STRING, NULL);
@@ -82,37 +80,35 @@ static void test_tree_view()
 
     gtk_container_add(GTK_CONTAINER(sw), get_tree_view());
 
-    g_signal_connect(window, "destroy", G_CALLBACK(gtk_widget_destroyed), &window);
+    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), &window);
 
-    gtk_widget_show(window);
+    gtk_widget_show_all(window);
     gtk_main();
 }
 
 static void test2()
 {
     GtkWidget *window;
-    GtkWidget *vbox;
-    GtkWidget *sw;
-    //GtkWidget *label;
     GtkWidget *button;
 
+    g_print("test2");
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    //gtk_window_set_default_size(GTK_WINDOW(window), 280, 250);
+    gtk_window_set_default_size(GTK_WINDOW(window), 480, 320);
     gtk_window_set_title(GTK_WINDOW(window), "minibox");
 
-    //label = gtk_label_new ("this is a label");
-    //gtk_container_add(GTK_CONTAINER(window), label);
-
-    button = gtk_button_new_with_label("按我");
+    button = gtk_button_new_with_label("Press Me!");
     gtk_container_add(GTK_CONTAINER(window), button);
+    gtk_widget_show(button);
 
-    gtk_widget_show(window);
+    g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+
+    gtk_widget_show_all(window);
     gtk_main();
 }
 
 int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
-    test2();
+    test_tree_view();
     return 0;
 }

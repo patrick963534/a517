@@ -12,3 +12,13 @@ cd ../../../
 cd unit_test
 lua premake4_makefile.lua
 cd ../
+
+#echo 'compile minibox'
+cd minibox
+lua premake4_makefile.lua
+cd ../
+
+#echo 'compile utsp_demo'
+cd tsp_demo
+lua premake4_makefile.lua
+cd ../
