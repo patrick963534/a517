@@ -56,12 +56,33 @@ static GtkWidget* get_tree_view()
     return treeview;
 }
 
+void
+view_onRowActivated (GtkTreeView        *treeview,
+                     GtkTreePath        *path,
+                     GtkTreeViewColumn  *col,
+                     gpointer            userdata)
+{
+    GtkTreeModel *model;
+    GtkTreeIter   iter;
+
+    model = gtk_tree_view_get_model(treeview);
+
+    if (gtk_tree_model_get_iter(model, &iter, path))
+    {
+        gchar *name;
+        gtk_tree_model_get(model, &iter, COLUMN_STRING, &name, -1);
+        g_print("Double-clicked row contains string: %s\n", name);
+        g_free(name);
+    }
+}
+
 static void test_tree_view()
 {
     GtkWidget *window;
     GtkWidget *vbox;
     GtkWidget *sw;
     GtkWidget *label;
+    GtkWidget *treeview;
 
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size (GTK_WINDOW(window), 280, 250);
@@ -78,7 +99,9 @@ static void test_tree_view()
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
     gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
 
-    gtk_container_add(GTK_CONTAINER(sw), get_tree_view());
+    treeview = get_tree_view();
+    gtk_container_add(GTK_CONTAINER(sw), treeview);
+    g_signal_connect(treeview, "row-activated", G_CALLBACK(view_onRowActivated), NULL);
 
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), &window);
 
