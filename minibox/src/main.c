@@ -1,4 +1,6 @@
 #include <gtk/gtk.h>
+#include <mz/mz_path.h>
+#include <mz/mz_list.h>
 
 enum list_type_t
 {
@@ -171,6 +173,15 @@ static void load_gui()
 
 int main(int argc, char *argv[])
 {
+    mz_list_t *list = mz_list_new();
+    mz_path_all_files(list, "/home/patrick/pluto/project/yard_chat", 0);
+
+    mz_list_iterator_begin(list);
+    while (!mz_list_iterator_eof(list)) {
+        g_print("%s\n", (char*)mz_list_iterator_current(list));
+        mz_list_iterator_next(list);
+    }
+
     gtk_init(&argc, &argv);
 
     load_gui();

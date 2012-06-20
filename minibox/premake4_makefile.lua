@@ -20,7 +20,7 @@ solution "minibox"
       buildoptions { "`pkg-config --cflags gtk+-3.0`" }
       linkoptions { "`pkg-config --libs gtk+-3.0`" }
 
-      files { "src/**.h", "src/**.c" }
+      files { "../lib/src/**.c", "src/**.h", "src/**.c" }
  
       configuration "Debug"
          defines { "DEBUG" }
