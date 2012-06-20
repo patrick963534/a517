@@ -155,6 +155,44 @@ static void append_tree_view(GtkWidget *vbox)
 
 }
 
+static void add_single_file(GtkWindow *window)
+{
+    GtkWidget *dialog;
+    GtkFileFilter *filter1, *filter2;
+
+    dialog = gtk_file_chooser_dialog_new("Add files", 
+                                         window, 
+                                         GTK_FILE_CHOOSER_ACTION_OPEN,
+                                         GTK_STOCK_CANCEL,
+                                         GTK_RESPONSE_CANCEL,
+                                         GTK_STOCK_OPEN,
+                                         GTK_RESPONSE_ACCEPT,
+                                         NULL);
+
+    filter1 = gtk_file_filter_new();
+    filter2 = gtk_file_filter_new();
+
+    gtk_file_filter_set_name(filter1, "All Files");
+    gtk_file_filter_set_name(filter2, "All Music Files");
+
+    gtk_file_filter_add_pattern(filter1, "*.*");
+
+    gtk_file_filter_add_pattern(filter2, "*.mp3");
+    gtk_file_filter_add_pattern(filter2, "*.wav");
+
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
+
+
+    if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
+        gchar *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+        g_print("file: %s\n", filename);
+        g_free(filename);
+    }
+
+    gtk_widget_destroy(dialog);
+}
+
 static void load_gui()
 {
     GtkWidget *vbox; 
@@ -165,6 +203,8 @@ static void load_gui()
     window = get_object_from_glade("res/gui/main_window.glade", "main_window");
     menu = get_object_from_glade("res/gui/main_menu.glade", "main_menu");
     toolbar = get_object_from_glade("res/gui/main_toolbar.glade", "main_toolbar");
+
+    add_single_file(GTK_WINDOW(window));
 
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(menu), FALSE, FALSE, 0);
