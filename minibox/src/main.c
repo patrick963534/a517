@@ -95,7 +95,7 @@ static GtkWidget* get_tree_view()
     return treeview;
 }
 
-void view_row_activated (GtkTreeView        *treeview,
+static void view_row_activated (GtkTreeView        *treeview,
                          GtkTreePath        *path,
                          GtkTreeViewColumn  *col,
                          gpointer            userdata)

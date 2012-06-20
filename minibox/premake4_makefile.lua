@@ -14,7 +14,7 @@ solution "minibox"
       location ( "build" )
       targetdir ( "bin" )
       libdirs { "/usr/lib" }
-      links { }
+      links { "rt", "pthread" }
       includedirs { "../lib/include", "usr/include", "usr/include/gtk-3.0" }
 
       buildoptions { "`pkg-config --cflags gtk+-3.0`" }
