@@ -71,7 +71,7 @@ static void add_columns(GtkTreeView *treeview)
     gtk_tree_view_append_column (treeview, column);
 
     renderer = gtk_cell_renderer_text_new();
-    column = gtk_tree_view_column_new_with_attributes ("Description", renderer, "text", COLUMN_FILENAME, NULL);
+    column = gtk_tree_view_column_new_with_attributes ("Filename", renderer, "text", COLUMN_FILENAME, NULL);
     gtk_tree_view_column_set_sort_column_id(column, COLUMN_FILENAME);
     gtk_tree_view_append_column (treeview, column);
 }
@@ -165,9 +165,68 @@ static void test2()
     gtk_main();
 }
 
+static GObject* get_object_from_glade(const char *filepath, const char *obj_name)
+{
+    GtkBuilder *builder;
+    GObject    *obj;
+    GError     *err = NULL;
+
+    builder = gtk_builder_new();
+    gtk_builder_add_from_file(builder, filepath, &err);
+
+    obj = gtk_builder_get_object(builder, obj_name);
+
+    if (obj == NULL)
+        g_print("failed to load [%s] from file [%s].\n", obj_name, filepath);
+
+    return obj;
+}
+
+static void append_tree_view(GtkWidget *vbox)
+{
+    GtkWidget *sw;
+    GtkWidget *treeview;
+
+    sw = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw), GTK_SHADOW_ETCHED_IN);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
+
+    treeview = get_tree_view();
+    gtk_container_add(GTK_CONTAINER(sw), treeview);
+    g_signal_connect(treeview, "row-activated", G_CALLBACK(view_row_activated), NULL);
+
+}
+
+static void test_build_gui()
+{
+    GtkWidget *vbox; 
+    GObject *window;
+    GObject *menu;
+    GObject *toolbar;
+
+    window = get_object_from_glade("res/gui/main_window.glade", "main_window");
+    menu = get_object_from_glade("res/gui/main_menu.glade", "main_menu");
+    toolbar = get_object_from_glade("res/gui/main_toolbar.glade", "main_toolbar");
+
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(menu), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(toolbar), FALSE, FALSE, 0);
+
+    append_tree_view(vbox);
+
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+
+    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    gtk_widget_show_all(GTK_WIDGET(window));
+
+    gtk_main();
+}
+
 int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
-    test_tree_view();
+    test_build_gui();
     return 0;
 }
