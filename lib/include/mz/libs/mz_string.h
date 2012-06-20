@@ -4,6 +4,19 @@
 #include <mz/libs/mz_defs.h>
 #include <string.h>
 
+typedef struct mz_string_t
+{
+    char    *str;
+    int     nstr;
+    int     increase_step;
+} mz_string_t;
+
+MZ_API mz_string_t* mz_string_new();
+MZ_API void mz_string_delete(mz_string_t *me);
+MZ_API void mz_string_append_char(mz_string_t *me, char ch);
+MZ_API void mz_string_append_char_array(mz_string_t *me, char *char_array, int array_sz);
+MZ_API void mz_string_append_string(mz_string_t *me, mz_string_t *dst);
+
 MZ_API const char*      mz_strcopy(char *buf, const char *src, int sz);
 MZ_API char*            mz_strdup(const char *str);
 MZ_API int              mz_strlen(const char *str);
