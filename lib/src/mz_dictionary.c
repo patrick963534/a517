@@ -25,7 +25,7 @@ MZ_API void mz_dictionary_delete(mz_dictionary_t *me)
 MZ_API void mz_dictionary_add(mz_dictionary_t *me, const char *key, void *value)
 {
     mz_dictionary_item_t *it = mz_malloc(sizeof(*it));
-    it->key = mz_string_dup(key);
+    it->key = mz_strdup(key);
     it->value = value;
 
     mz_list_add(me->root, it);
@@ -45,7 +45,7 @@ MZ_API void* mz_dictionary_contains(mz_dictionary_t *me, const char *key)
     while(mz_list_iterator_eof(me->root)) {
         it = (mz_dictionary_item_t*)mz_list_iterator_current(me->root);
 
-        if (mz_string_equal(it->key, key))
+        if (mz_strequal(it->key, key))
             return it->value;
 
         mz_list_iterator_next(me->root);
@@ -63,7 +63,7 @@ MZ_API void mz_dictionary_remove(mz_dictionary_t *me, const char *key)
     while(mz_list_iterator_eof(me->root)) {
         it = (mz_dictionary_item_t*)mz_list_iterator_current(me->root);
 
-        if (mz_string_equal(it->key, key))
+        if (mz_strequal(it->key, key))
             mz_list_remove(me->root, me->root->pos);
 
         mz_list_iterator_next(me->root);

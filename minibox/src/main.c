@@ -112,59 +112,6 @@ void view_row_activated (GtkTreeView        *treeview,
     }
 }
 
-static void test_tree_view()
-{
-    GtkWidget *window;
-    GtkWidget *vbox;
-    GtkWidget *sw;
-    GtkWidget *label;
-    GtkWidget *treeview;
-
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size (GTK_WINDOW(window), 280, 250);
-    gtk_window_set_title(GTK_WINDOW(window), "minibox");
-
-    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_container_add(GTK_CONTAINER(window), vbox);
-
-    label = gtk_label_new ("this is a label.");
-    gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-
-    sw = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(sw), GTK_SHADOW_ETCHED_IN);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
-
-    treeview = get_tree_view();
-    gtk_container_add(GTK_CONTAINER(sw), treeview);
-    g_signal_connect(treeview, "row-activated", G_CALLBACK(view_row_activated), NULL);
-
-    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), &window);
-
-    gtk_widget_show_all(window);
-    gtk_main();
-}
-
-static void test2()
-{
-    GtkWidget *window;
-    GtkWidget *button;
-
-    g_print("test2");
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_default_size(GTK_WINDOW(window), 480, 320);
-    gtk_window_set_title(GTK_WINDOW(window), "minibox");
-
-    button = gtk_button_new_with_label("Press Me!");
-    gtk_container_add(GTK_CONTAINER(window), button);
-    gtk_widget_show(button);
-
-    g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
-
-    gtk_widget_show_all(window);
-    gtk_main();
-}
-
 static GObject* get_object_from_glade(const char *filepath, const char *obj_name)
 {
     GtkBuilder *builder;
@@ -198,7 +145,7 @@ static void append_tree_view(GtkWidget *vbox)
 
 }
 
-static void test_build_gui()
+static void load_gui()
 {
     GtkWidget *vbox; 
     GObject *window;
@@ -220,13 +167,14 @@ static void test_build_gui()
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     gtk_widget_show_all(GTK_WIDGET(window));
-
-    gtk_main();
 }
 
 int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
-    test_build_gui();
+
+    load_gui();
+
+    gtk_main();
     return 0;
 }

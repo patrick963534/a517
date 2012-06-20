@@ -32,7 +32,7 @@ static void rudp_read_data(mz_rudp_t *rudp, void *arg)
 
         yc_msg_pool_end_queue(td->msg_pool, it);
 
-        td->is_quit = mz_string_equal(msg, quit_string);
+        td->is_quit = mz_strequal(msg, quit_string);
     }
 }
 
@@ -75,12 +75,12 @@ static void epoll_way()
 
     while (1) {
         while (NULL != (msg = yc_msg_pool_pop(td->msg_pool))) {
-            if (!mz_string_equal(msg->data, "client_quit"))
+            if (!mz_strequal(msg->data, "client_quit"))
                 mz_snprintf(buf, sizeof(buf), "server reply: \"%s\" -> msg_pool_count:%-5d", msg->data, yc_msg_pool_count(td->msg_pool));
             else
                 mz_snprintf(buf, sizeof(buf), "%s", msg->data);
         
-            mz_rudp_send(msg->rudp, buf, mz_string_len(buf) + 1, &msg->from_addr);
+            mz_rudp_send(msg->rudp, buf, mz_strlen(buf) + 1, &msg->from_addr);
             logI("%s -> send to client.", buf);
 
             yc_msg_pool_item_delete(msg);

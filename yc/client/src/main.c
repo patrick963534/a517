@@ -34,7 +34,7 @@ static void* thread_run(void *arg)
         scanf("%s", buf);
 
         mz_rudp_send(rudp, buf, strlen(buf) + 1, dst);
-    } while (!mz_string_equal(buf, "client_quit"));
+    } while (!mz_strequal(buf, "client_quit"));
 
     mz_rudp_addr_delete(dst);
     return NULL;
@@ -64,7 +64,7 @@ int main(int argc, char **args)
         }
 
         mz_time_sleep(33);
-    } while (!mz_string_equal(buf, "client_quit"));
+    } while (!mz_strequal(buf, "client_quit"));
 
     mz_thread_join(thread);
     mz_thread_delete(thread);

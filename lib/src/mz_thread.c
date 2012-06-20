@@ -6,7 +6,7 @@ MZ_API mz_thread_t* mz_thread_new(mz_thread_func_t func, const char *name, void 
 {
     mz_thread_t *me = mz_malloc(sizeof(*me));
     me->fd = mz_malloc(sizeof(pthread_t));
-    me->name = mz_string_dup(name);
+    me->name = mz_strdup(name);
 
     pthread_create((pthread_t*)me->fd, NULL, func, arg);
 
