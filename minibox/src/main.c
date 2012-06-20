@@ -138,8 +138,6 @@ static void update_playlist()
 static void process_GSList(gpointer data, gpointer user_data)
 {
     mz_list_add(file_list, data);
-
-    g_print("%s\n", (char*)data);
 }
 
 static void add_single_file(GtkWindow *window)
@@ -182,16 +180,23 @@ static void add_single_file(GtkWindow *window)
     gtk_widget_destroy(dialog);
 }
 
+static void toolbar_add_files(GtkWidget *button, gpointer userdata)
+{
+    add_single_file(GTK_WINDOW(userdata));
+}
+
 static void load_gui()
 {
     GtkWidget *vbox; 
     GObject *window;
     GObject *menu;
     GObject *toolbar;
+    GObject *add_file_tool_button;
 
     window = get_object_from_glade("res/gui/main_window.glade", "main_window");
     menu = get_object_from_glade("res/gui/main_menu.glade", "main_menu");
     toolbar = get_object_from_glade("res/gui/main_toolbar.glade", "main_toolbar");
+    add_file_tool_button = get_object_from_glade("res/gui/main_toolbar.glade", "add_files");
 
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(menu), FALSE, FALSE, 0);
@@ -201,9 +206,8 @@ static void load_gui()
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
+    g_signal_connect(add_file_tool_button, "clicked", G_CALLBACK(toolbar_add_files), window);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
-    add_single_file(GTK_WINDOW(window));
 
     gtk_widget_show_all(GTK_WIDGET(window));
 }
