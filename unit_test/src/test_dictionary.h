@@ -25,7 +25,15 @@ void test_dictionary()
         mz_dictionary_add(me, buf, it);
     }
 
-    mz_cunit_assert_string(MZ_TRUE, "2", (char*)mz_dictionary_contains(me, "2"));
+    for (i = 0; i < 5; i++) {
+        char buf[8];
+        item2_t *it;
+
+        mz_snprintf(buf, sizeof(buf), "%d", i);
+        it = (item2_t*)mz_dictionary_contains(me, buf);
+
+        mz_cunit_assert_int(MZ_TRUE, i, it->id);
+    }
 
     mz_dictionary_each_do(me, mz_free);
     mz_dictionary_delete(me);
