@@ -1,6 +1,8 @@
 #ifndef __SOUND_PLAY_H__
 #define __SOUND_PLAY_H__
-
+/*
+ * http://apps.hi.baidu.com/share/detail/448753
+ */
 void play_sound_ogg(const char *file)
 {
     char *uri;
