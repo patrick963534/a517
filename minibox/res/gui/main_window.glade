@@ -5,6 +5,7 @@
     <property name="can_focus">False</property>
     <property name="default_width">200</property>
     <property name="default_height">500</property>
+    <property name="icon">../image/git-gui.ico</property>
     <child>
       <placeholder/>
     </child>
