@@ -1,8 +1,15 @@
 #ifndef __SOUND_PLAY_H__
 #define __SOUND_PLAY_H__
+
 /*
  * http://apps.hi.baidu.com/share/detail/448753
  * http://wangjiajun53880.blog.163.com/blog/static/1170013942010102221224798/
+ *
+ * need to install following packages:
+ *       gstreamer0.10
+ *       gstreamer0.10-base-plugins  (contains 'alsasink')
+ *       gstreamer0.10-ugly-plugins  (used to support 'libmad')
+ *       libmad                      (support .mp3 decode)
  */
 
 #include <gst/gst.h>
@@ -67,9 +74,6 @@ void sound_using_mad_stop()
     gst_element_set_state(pipeline, GST_STATE_NULL);
 }
 
-/*
- *  need to install gstreamer0.10-ugly-plugins and libmad.
- */
 void sound_using_mad_play(const char *file)
 {
     g_main_loop_quit(loop);
