@@ -2,14 +2,21 @@
 #define __SOUND_PLAY_H__
 /*
  * http://apps.hi.baidu.com/share/detail/448753
+ * http://wangjiajun53880.blog.163.com/blog/static/1170013942010102221224798/
  */
 
 #include <gst/gst.h>
 #include <mz/mz_libs.h>
 
-/*
- *  need to install gstreamer0.10-ugly-plugins
- */
+static gboolean bus_watch(GstBus *bus , GstMessage *msg , gpointer data)
+{
+    GMainLoop *loop = (GMainLoop *) data;
+    if(GST_MESSAGE_TYPE(msg) == GST_MESSAGE_EOS){
+        g_main_loop_quit(loop);
+    }
+    return TRUE;
+}
+
 static GstElement* element_load(const char *factory, const char *name)
 {
     GstElement *element;
@@ -24,10 +31,16 @@ static GstElement* element_load(const char *factory, const char *name)
     return element;
 }
 
+/*
+ *  need to install gstreamer0.10-ugly-plugins
+ */
 void play_sound_use_mad(const char *file)
 {
     GstElement *pipeline,*filesrc,*decoder,*convert,*audiosink;
+    GMainLoop *loop;
+    GstBus *bus;
 
+    loop = g_main_loop_new(NULL, TRUE);
     pipeline=gst_pipeline_new("pipeline");
 
     if(!pipeline) {
@@ -40,6 +53,10 @@ void play_sound_use_mad(const char *file)
     convert = element_load("audioconvert", "a-convert");
     audiosink = element_load("alsasink","sink");
 
+    bus = gst_pipeline_get_bus(GST_PIPELINE(pipeline));
+    gst_bus_add_watch(bus , bus_watch , loop);
+    g_object_unref(bus);
+
     g_object_set(G_OBJECT(filesrc), "location", file, NULL);
 
     gst_bin_add_many(GST_BIN(pipeline),filesrc,decoder,convert,audiosink,NULL);
@@ -47,11 +64,11 @@ void play_sound_use_mad(const char *file)
     gst_element_link_many(filesrc, decoder, convert, audiosink, NULL);
 
     gst_element_set_state(pipeline,GST_STATE_PLAYING);
+    g_print("start playing\n");
 
-    while(gst_bin_iterate_recurse(GST_BIN(pipeline))) {
-        mz_time_sleep(256);
-    }
+    g_main_loop_run(loop);
 
+    g_print("stop play.\n");
     gst_element_set_state(pipeline, GST_STATE_NULL);
 
     gst_object_unref(GST_OBJECT(pipeline));
