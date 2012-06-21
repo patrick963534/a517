@@ -8,6 +8,9 @@
 #include <gst/gst.h>
 #include <mz/mz_libs.h>
 
+static GstElement *pipeline, *filesrc;
+static GMainLoop *loop;
+
 static gboolean bus_watch(GstBus *bus , GstMessage *msg , gpointer data)
 {
     GMainLoop *loop = (GMainLoop *) data;
@@ -30,9 +33,6 @@ static GstElement* element_load(const char *factory, const char *name)
 
     return element;
 }
-
-static GstElement *pipeline, *filesrc;
-static GMainLoop *loop;
 
 void init_sound_mad()
 {
