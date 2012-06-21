@@ -57,7 +57,7 @@ static GtkWidget* get_tree_view()
     return treeview;
 }
 
-static void test_sound(const char *file)
+static void play_sound_ogg_1(const char *file)
 {
     char *uri;
     GstElement *sink, *play;
@@ -75,7 +75,7 @@ static void test_sound(const char *file)
 
     g_print("start playing\n");
     gst_element_set_state(play,GST_STATE_PLAYING);
-    mz_time_sleep(1000);
+    mz_time_sleep(5000);
     gst_element_set_state(play,GST_STATE_NULL);
     g_print("stop playing\n");
     
@@ -103,7 +103,7 @@ static void view_row_activated (GtkTreeView        *treeview,
 
         g_print("Double-clicked row contains string: %s\n", name);
 
-        test_sound((const char*)name);
+        play_sound_ogg_1((const char*)name);
 
         g_free(name);
     }
@@ -251,15 +251,6 @@ static void load_gui()
 
 int main(int argc, char *argv[])
 {
-    mz_list_t *list = mz_list_new();
-    mz_path_all_files(list, "/home/patrick/pluto/project/yard_chat", 0);
-
-    mz_list_iterator_begin(list);
-    while (!mz_list_iterator_eof(list)) {
-        g_print("%s\n", (char*)mz_list_iterator_current(list));
-        mz_list_iterator_next(list);
-    }
-
     file_list = mz_list_new();
     builders = mz_dictionary_new();
 
