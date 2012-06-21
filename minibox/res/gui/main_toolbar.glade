@@ -27,12 +27,26 @@
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">remove from list.</property>
         <property name="use_action_appearance">False</property>
-        <property name="label" translatable="yes">toolbutton1</property>
+        <property name="label" translatable="yes">Remove File</property>
         <property name="use_underline">True</property>
         <property name="stock_id">gtk-delete</property>
       </object>
       <packing>
         <property name="expand">False</property>
+        <property name="homogeneous">True</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkToolButton" id="pause_music">
+        <property name="use_action_appearance">False</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="label" translatable="yes">Pause</property>
+        <property name="use_underline">True</property>
+        <property name="stock_id">gtk-media-pause</property>
+      </object>
+      <packing>
         <property name="homogeneous">True</property>
       </packing>
     </child>

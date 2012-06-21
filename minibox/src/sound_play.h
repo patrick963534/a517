@@ -61,10 +61,16 @@ void init_sound_mad()
     gst_element_link_many(filesrc, decoder, convert, audiosink, NULL);
 }
 
+void sound_using_mad_stop()
+{
+    g_main_loop_quit(loop);
+    gst_element_set_state(pipeline, GST_STATE_NULL);
+}
+
 /*
  *  need to install gstreamer0.10-ugly-plugins and libmad.
  */
-void play_sound_use_mad(const char *file)
+void sound_using_mad_play(const char *file)
 {
     g_main_loop_quit(loop);
     gst_element_set_state(pipeline, GST_STATE_NULL);

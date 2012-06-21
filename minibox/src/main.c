@@ -75,7 +75,7 @@ static void view_row_activated (GtkTreeView        *treeview,
 
         g_print("Double-clicked row contains string: %s\n", name);
 
-        play_sound_use_mad((const char*)name);
+        sound_using_mad_play((const char*)name);
 
         g_free(name);
     }
@@ -168,16 +168,16 @@ static void add_single_file(GtkWindow *window)
     filter2 = gtk_file_filter_new();
 
     gtk_file_filter_set_name(filter1, "All Files");
-    gtk_file_filter_set_name(filter2, "All Music Files");
+    gtk_file_filter_set_name(filter2, "All Music Files(*.mp3)");
 
     gtk_file_filter_add_pattern(filter1, "*.*");
 
     gtk_file_filter_add_pattern(filter2, "*.mp3");
-    gtk_file_filter_add_pattern(filter2, "*.wav");
-    gtk_file_filter_add_pattern(filter2, "*.ogg");
+    //gtk_file_filter_add_pattern(filter2, "*.wav");
+    //gtk_file_filter_add_pattern(filter2, "*.ogg");
 
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
-    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
+    //gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
 
     if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT) {
         GSList *filenames = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog));
@@ -194,18 +194,21 @@ static void toolbar_add_files(GtkWidget *button, gpointer userdata)
     add_single_file(GTK_WINDOW(userdata));
 }
 
+static void toolbar_pause_music(GtkWidget *button, gpointer userdata)
+{
+    sound_using_mad_stop();
+}
+
 static void load_gui()
 {
     GtkWidget *vbox; 
     GObject *window;
     GObject *menu;
     GObject *toolbar;
-    GObject *add_file_tool_button;
 
     window = get_object_from_glade("res/gui/main_window.glade", "main_window");
     menu = get_object_from_glade("res/gui/main_menu.glade", "main_menu");
     toolbar = get_object_from_glade("res/gui/main_toolbar.glade", "main_toolbar");
-    add_file_tool_button = get_object_from_glade("res/gui/main_toolbar.glade", "add_files");
 
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(menu), FALSE, FALSE, 0);
@@ -215,7 +218,9 @@ static void load_gui()
 
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
-    g_signal_connect(add_file_tool_button, "clicked", G_CALLBACK(toolbar_add_files), window);
+    g_signal_connect(get_object_from_glade("res/gui/main_toolbar.glade", "add_files"), "clicked", G_CALLBACK(toolbar_add_files), window);
+    g_signal_connect(get_object_from_glade("res/gui/main_toolbar.glade", "pause_music"), "clicked", G_CALLBACK(toolbar_pause_music), window);
+
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     gtk_widget_show_all(GTK_WIDGET(window));
