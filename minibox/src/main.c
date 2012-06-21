@@ -229,6 +229,8 @@ int main(int argc, char *argv[])
     gtk_init(&argc, &argv);
     gst_init(&argc, &argv);
 
+    init_sound_mad();
+
     load_gui();
 
     gtk_main();

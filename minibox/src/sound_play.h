@@ -31,13 +31,12 @@ static GstElement* element_load(const char *factory, const char *name)
     return element;
 }
 
-/*
- *  need to install gstreamer0.10-ugly-plugins
- */
-void play_sound_use_mad(const char *file)
+static GstElement *pipeline, *filesrc;
+static GMainLoop *loop;
+
+void init_sound_mad()
 {
-    GstElement *pipeline,*filesrc,*decoder,*convert,*audiosink;
-    GMainLoop *loop;
+    GstElement *decoder,*convert,*audiosink;
     GstBus *bus;
 
     loop = g_main_loop_new(NULL, TRUE);
@@ -57,11 +56,20 @@ void play_sound_use_mad(const char *file)
     gst_bus_add_watch(bus , bus_watch , loop);
     g_object_unref(bus);
 
-    g_object_set(G_OBJECT(filesrc), "location", file, NULL);
-
     gst_bin_add_many(GST_BIN(pipeline),filesrc,decoder,convert,audiosink,NULL);
 
     gst_element_link_many(filesrc, decoder, convert, audiosink, NULL);
+}
+
+/*
+ *  need to install gstreamer0.10-ugly-plugins and libmad.
+ */
+void play_sound_use_mad(const char *file)
+{
+    g_main_loop_quit(loop);
+    gst_element_set_state(pipeline, GST_STATE_NULL);
+
+    g_object_set(G_OBJECT(filesrc), "location", file, NULL);
 
     gst_element_set_state(pipeline,GST_STATE_PLAYING);
     g_print("start playing\n");
@@ -71,7 +79,9 @@ void play_sound_use_mad(const char *file)
     g_print("stop play.\n");
     gst_element_set_state(pipeline, GST_STATE_NULL);
 
-    gst_object_unref(GST_OBJECT(pipeline));
+    //gst_object_unref(GST_OBJECT(pipeline));
+
+    g_print("exit play sound.\n");
 }
 
 void play_sound_ogg(const char *file)
