@@ -75,7 +75,7 @@ static void view_row_activated (GtkTreeView        *treeview,
 
         g_print("Double-clicked row contains string: %s\n", name);
 
-        play_sound_ogg((const char*)name);
+        play_sound_use_mad((const char*)name);
 
         g_free(name);
     }
