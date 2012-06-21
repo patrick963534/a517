@@ -14,8 +14,8 @@ solution "minibox"
       location ( "build" )
       targetdir ( "bin" )
       libdirs { "/usr/lib" }
-      links { "rt", "pthread" }
-      includedirs { "../lib/include", "usr/include", "usr/include/gtk-3.0" }
+      links { "rt", "pthread", "gstreamer-0.10" }
+      includedirs { "../lib/include", "usr/include", "/usr/include/gstreamer-0.10", "/usr/include/libxml2", "usr/include/gtk-3.0" }
 
       buildoptions { "`pkg-config --cflags gtk+-3.0`" }
       linkoptions { "`pkg-config --libs gtk+-3.0`" }

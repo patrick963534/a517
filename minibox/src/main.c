@@ -1,4 +1,6 @@
 #include <gtk/gtk.h>
+#include <gst/gst.h>
+#include <mz/mz_libs.h>
 #include <mz/mz_path.h>
 #include <mz/mz_list.h>
 #include <mz/mz_dictionary.h>
@@ -55,6 +57,35 @@ static GtkWidget* get_tree_view()
     return treeview;
 }
 
+static void test_sound(const char *file)
+{
+    char *uri;
+    GstElement *sink, *play;
+
+    sink = gst_element_factory_make("alsasink", "sink");
+    play = gst_element_factory_make("playbin2", "play");
+    uri = g_strdup_printf("file://%s", file);
+
+    g_object_set(G_OBJECT(play), "uri", uri, "audio-sink", sink, NULL);
+
+    if (!sink || !play || !uri) {
+        g_warning("One element could not be created!! (%s, %d)", __FILE__, __LINE__);
+        goto error;
+    }
+
+    g_print("start playing\n");
+    gst_element_set_state(play,GST_STATE_PLAYING);
+    mz_time_sleep(1000);
+    gst_element_set_state(play,GST_STATE_NULL);
+    g_print("stop playing\n");
+    
+error:
+    if (play) {
+        g_free(uri);
+        gst_object_unref(GST_OBJECT(play));
+    } 
+}
+
 static void view_row_activated (GtkTreeView        *treeview,
                          GtkTreePath        *path,
                          GtkTreeViewColumn  *col,
@@ -69,7 +100,11 @@ static void view_row_activated (GtkTreeView        *treeview,
     {
         gchar *name;
         gtk_tree_model_get(model, &iter, COLUMN_FILENAME, &name, -1);
+
         g_print("Double-clicked row contains string: %s\n", name);
+
+        test_sound((const char*)name);
+
         g_free(name);
     }
 }
@@ -135,6 +170,7 @@ static void update_playlist()
     }
 }
 
+
 static void process_GSList(gpointer data, gpointer user_data)
 {
     mz_list_add(file_list, data);
@@ -166,6 +202,7 @@ static void add_single_file(GtkWindow *window)
 
     gtk_file_filter_add_pattern(filter2, "*.mp3");
     gtk_file_filter_add_pattern(filter2, "*.wav");
+    gtk_file_filter_add_pattern(filter2, "*.ogg");
 
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter2);
     gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter1);
@@ -227,6 +264,7 @@ int main(int argc, char *argv[])
     builders = mz_dictionary_new();
 
     gtk_init(&argc, &argv);
+    gst_init(&argc, &argv);
 
     load_gui();
 
