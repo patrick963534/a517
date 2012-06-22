@@ -7,7 +7,7 @@
 #include <mz/mz_path.h>
 #include <mz/mz_list.h>
 #include <mz/mz_dictionary.h>
-#include "sound_play.h"
+#include "mm_sound.h"
 
 typedef struct mm_playlist_t
 {
