@@ -22,24 +22,15 @@ static mm_playlist_t* singleton;
 static void update_playlist()
 {
     GtkTreeIter iter;
+    char *file;
     int i = 1;
 
     gtk_list_store_clear(list_store);
 
-    mz_list_iterator_begin(file_list);
-    
-    while (!mz_list_iterator_eof(file_list)) {
-
-        char *file = (char*)mz_list_iterator_current(file_list);
-
+    mz_list_foreach(file_list, file, char) {
         gtk_list_store_append(list_store, &iter);
-        gtk_list_store_set(list_store, &iter, 
-                           COLUMN_ID, i, 
-                           COLUMN_FILENAME, file, 
-                           -1);
-
+        gtk_list_store_set(list_store, &iter, COLUMN_ID, i, COLUMN_FILENAME, file, -1); 
         i++;
-        mz_list_iterator_next(file_list);
     }
 }
 
