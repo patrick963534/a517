@@ -32,14 +32,10 @@ static void run_test()
     test_unit_t *t;
     test_count = 0;
 
-    mz_list_iterator_begin(root);
-    while (!mz_list_iterator_eof(root)) {
-        t = (test_unit_t*)mz_list_iterator_current(root);
+    mz_list_foreach(root, t, test_unit_t) {
         t->test_func();
         logI("%s", t->name);
         test_count++;
-
-        mz_list_iterator_next(root);
     }
 }
 

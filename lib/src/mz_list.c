@@ -2,11 +2,10 @@
 #include <mz/mz_general_list.h>
 #include <mz/mz_libs.h>
 
-typedef struct mz_list_item_t
-{
-    mz_general_list_t   node;
-    void                *ptr_ref;
-} mz_list_item_t;
+static void             mz_list_iterator_begin(mz_list_t *me);
+static void             mz_list_iterator_next(mz_list_t *me);
+static mz_bool          mz_list_iterator_eof(mz_list_t *me);
+static void*            mz_list_iterator_current(mz_list_t *me);
 
 #define mz_list_entry(ptr, type) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->node)))
