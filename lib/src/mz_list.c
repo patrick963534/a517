@@ -2,13 +2,32 @@
 #include <mz/mz_general_list.h>
 #include <mz/mz_libs.h>
 
-static void             mz_list_iterator_begin(mz_list_t *me);
-static void             mz_list_iterator_next(mz_list_t *me);
-static mz_bool          mz_list_iterator_eof(mz_list_t *me);
-static void*            mz_list_iterator_current(mz_list_t *me);
-
 #define mz_list_entry(ptr, type) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->node)))
+
+static mz_bool mz_list_iterator_eof(mz_list_t *me)
+{
+    return me->pos == &me->head;
+}
+
+static void mz_list_iterator_begin(mz_list_t *me)
+{
+    me->pos = me->head.next;
+    me->bak_pos = me->pos->next;
+}
+
+static void mz_list_iterator_next(mz_list_t *me)
+{
+    me->pos = me->bak_pos;
+    me->bak_pos = me->pos->next;
+}
+
+static void* mz_list_iterator_current(mz_list_t *me)
+{
+    mz_list_item_t *it;
+    it = mz_list_entry(me->pos, mz_list_item_t);
+    return it->ptr_ref;
+}
 
 MZ_API mz_list_t* mz_list_new()
 {
@@ -118,30 +137,6 @@ MZ_API void mz_list_each_do(mz_list_t *me, mz_list_do_func func)
         func(mz_list_iterator_current(me));
         mz_list_iterator_next(me);
     }
-}
-
-MZ_API mz_bool mz_list_iterator_eof(mz_list_t *me)
-{
-    return me->pos == &me->head;
-}
-
-MZ_API void mz_list_iterator_begin(mz_list_t *me)
-{
-    me->pos = me->head.next;
-    me->bak_pos = me->pos->next;
-}
-
-MZ_API void mz_list_iterator_next(mz_list_t *me)
-{
-    me->pos = me->bak_pos;
-    me->bak_pos = me->pos->next;
-}
-
-MZ_API void* mz_list_iterator_current(mz_list_t *me)
-{
-    mz_list_item_t *it;
-    it = mz_list_entry(me->pos, mz_list_item_t);
-    return it->ptr_ref;
 }
 
 MZ_API void* mz_list_get_first(mz_list_t *me)
