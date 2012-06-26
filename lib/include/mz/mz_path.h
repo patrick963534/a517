@@ -4,7 +4,11 @@
 #include <mz/mz_libs.h>
 #include <mz/mz_list.h>
 
-MZ_API void mz_path_all_folders(mz_list_t *list, const char *folder_path, int is_recursive);
-MZ_API void mz_path_all_files(mz_list_t *list, const char *folder_path, int is_recursive);
+/*
+ * Usage: mz_path_create_folder("res/a/b/c", MZ_TRUE);
+ */
+MZ_API mz_bool  mz_path_create_folder(const char *folder_path, mz_bool is_recursive);
+MZ_API void     mz_path_all_folders(mz_list_t *list, const char *folder_path, mz_bool is_recursive);
+MZ_API void     mz_path_all_files(mz_list_t *list, const char *folder_path, mz_bool is_recursive);
 
 #endif

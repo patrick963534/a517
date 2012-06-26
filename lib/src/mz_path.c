@@ -11,7 +11,55 @@ static int IS_DIR(const char* path)
     return S_ISDIR(st.st_mode);
 }
 
-MZ_API void mz_path_all_folders(mz_list_t *list, const char *folder_path, int is_recursive)
+static mz_bool create_single_folder(const char *path)
+{
+    struct stat st;
+    mz_bool status = MZ_TRUE;
+
+    if (0 != stat(path, &st))
+    {
+        /* Directory does not exist */
+        if (mkdir(path, 0777) != 0)
+            status = MZ_FALSE;
+    }
+    else if (!S_ISDIR(st.st_mode))
+    {
+        status = MZ_FALSE;
+    }
+
+    return status;
+}
+
+MZ_API mz_bool mz_path_create_folder(const char *folder_path, mz_bool is_recursive)
+{
+    if (!is_recursive) {
+        return create_single_folder(folder_path);
+    }
+    else {
+        char *path = mz_strdup(folder_path);
+        char *sp = path;
+        char *next = sp;
+        mz_bool status = MZ_TRUE;
+        
+        while (status && NULL != (sp = strchr(next, '/'))) {
+            if (sp != next) {
+                *sp = '\0';
+                status = create_single_folder(path);
+                *sp = '/';
+            }
+            next = sp + 1;
+        }
+
+        if (status)
+            status = create_single_folder(path);
+
+        mz_free(path);
+
+        return status;
+    }    
+}
+
+MZ_API void mz_path_all_folders(mz_list_t *list, const char *folder_path, mz_bool is_recursive)
 {
     DIR *pdir;
     char temp[512];
@@ -41,7 +89,7 @@ MZ_API void mz_path_all_folders(mz_list_t *list, const char *folder_path, int is
 
 }
 
-MZ_API void mz_path_all_files(mz_list_t *list, const char *folder_path, int is_recursive)
+MZ_API void mz_path_all_files(mz_list_t *list, const char *folder_path, mz_bool is_recursive)
 {
     DIR *pdir;
     char temp[512];
