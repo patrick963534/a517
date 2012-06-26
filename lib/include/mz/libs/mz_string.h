@@ -21,6 +21,7 @@ MZ_API const char*      mz_strcopy(char *buf, const char *src, int sz);
 MZ_API char*            mz_strdup(const char *str);
 MZ_API int              mz_strlen(const char *str);
 MZ_API char*            mz_strchr(const char *str, int ch);
+MZ_API char*            mz_strrchr(const char *str, int ch);
 MZ_API const char*      mz_strtoken(char *str, const char *delim);
 MZ_API mz_bool          mz_strequal(const char *str1, const char *str2);
 MZ_API char*            mz_strtrim(const char *str, int fail_value);

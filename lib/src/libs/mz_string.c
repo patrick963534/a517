@@ -114,3 +114,13 @@ MZ_API mz_bool mz_strcontains(const char *str, const char *target)
 {
     return strstr(str, target) != NULL;
 }
+
+MZ_API char* mz_strchr(const char *str, int ch)
+{
+    return strchr(str, ch);
+}
+
+MZ_API char* mz_strrchr(const char *str, int ch)
+{
+    return strrchr(str, ch);
+}

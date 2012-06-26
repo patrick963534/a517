@@ -59,6 +59,22 @@ MZ_API mz_bool mz_path_create_folder(const char *folder_path, mz_bool is_recursi
     }    
 }
 
+MZ_API char* mz_path_get_folder(const char *file_path)
+{
+    char *p = mz_strdup(file_path);
+    char *sp;
+
+    if (NULL != (sp = mz_strrchr(p, '/'))) {
+        *sp = '\0';
+    }
+    else {
+        mz_free(p);
+        p = mz_strdup("./");
+    }
+        
+    return p;
+}
+
 MZ_API void mz_path_all_folders(mz_list_t *list, const char *folder_path, mz_bool is_recursive)
 {
     DIR *pdir;
