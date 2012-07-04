@@ -1,5 +1,5 @@
 #include <mz/mz_cunit.h>
-#include <mz/libs/mz_log.h>
+#include <mz/mz_libs.h>
 
 MZ_API mz_bool mz_cunit_assert_int_(mz_bool is_equal, int expected, int v, const char *file, int line)
 {
@@ -23,14 +23,20 @@ MZ_API mz_bool mz_cunit_assert_string_(mz_bool is_equal, const char *expected, c
     const char *a = expected;
     const char *b = v;
 
-    do {
+    if (a == NULL && b == NULL)
+        result = MZ_TRUE;
+    else if (a == NULL || b == NULL)
+        result = MZ_FALSE;
+    else {
+        do {
 
-        if (*a != *b) {
-            result = MZ_FALSE;
-            break;
-        }
+            if (*a != *b) {
+                result = MZ_FALSE;
+                break;
+            }
 
-    } while (*a++ != 0 && *b++ != 0);
+        } while (*a++ != 0 && *b++ != 0);
+    }
 
     if (result != is_equal) {
         if (is_equal)
