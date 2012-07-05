@@ -13,4 +13,7 @@ MZ_API mz_bool mz_cunit_assert_wstring_(mz_bool is_equal, const wchar_t *expecte
 #define mz_cunit_assert_string(is_equal, expected, v) \
     { if (!mz_cunit_assert_string_(is_equal, expected, v, __FILE__, __LINE__)) return; }
 
+#define mz_cunit_assert_wstring(is_equal, expected, v) \
+    { if (!mz_cunit_assert_wstring_(is_equal, expected, v, __FILE__, __LINE__)) return; }
+
 #endif
