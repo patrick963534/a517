@@ -73,13 +73,12 @@ MZ_API mz_bool mz_cunit_assert_wstring_(mz_bool is_equal, const wchar_t *expecte
 
     if (result != is_equal) {
         if (is_equal)
-            logE("File: %s:%d ---> checking EQUAL: but expected value '%s' doesn't equals value '%s'.", file, line, expected, v);
+            wprintf(L"File: %s:%d ---> checking EQUAL: but expected value '%s' doesn't equals value '%s'.\n", file, line, expected, v);
         else
-            logE("File: %s:%d ---> checking NOT EQUAL: but expected value '%s' equals value '%s'.", file, line, expected, v);
+            wprintf(L"File: %s:%d ---> checking NOT EQUAL: but expected value '%s' equals value '%s'.\n", file, line, expected, v);
    
         return MZ_FALSE;
     }
 
     return MZ_TRUE;
-
 }
