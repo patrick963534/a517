@@ -2,6 +2,7 @@
 #define __MZ_LIBS_H__
 
 #include <stdio.h>
+#include <wchar.h>
 #include <mz/libs/mz_memory.h>
 #include <mz/libs/mz_log.h>
 #include <mz/libs/mz_defs.h>
