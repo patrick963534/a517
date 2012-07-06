@@ -1,0 +1,226 @@
+#ifndef __TEST_CTYPE_H__
+#define __TEST_CTYPE_H__
+
+#include <mz/mz_cunit.h>
+#include <mz/mz_libs.h>
+
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+#include "test.h"    
+
+typedef struct ut_range_t { int min; int max; } ut_range_t;
+typedef struct ut_map_t {int key; int value;} ut_map_t;
+
+#define array_count(arr) (sizeof(arr) / sizeof(arr[0]))
+
+static int range_check(int k, ut_range_t *arr, int count)
+{
+    const unsigned key = k;
+    const ut_range_t *base = &arr[0];
+    const ut_range_t *range;
+    int lim;
+
+    for (lim = count; lim != 0; lim >>= 1) {
+        range = base + (lim>>1);
+        if (key > range->max) { /* key > range.max: move right */
+            base = range + 1;
+            lim--;
+        }
+        else if (key >= range->min)
+            return 1;
+        /* else key < range.min else move left */
+    }
+    return 0;
+}
+
+static int map_get(int k, ut_map_t *arr, int count)
+{
+    const unsigned key = k;
+    const ut_map_t* base = &arr[0];
+    const ut_map_t* map;
+    int lim;
+    int cmp;
+    for (lim = count; lim != 0; lim >>= 1) {
+        map = base + (lim >> 1);
+        cmp = key - map->key;
+        if (cmp == 0)
+            return map->value;
+        if (cmp > 0) {/* key > map.key: move right */
+            base = map + 1;
+            lim--;
+        }/* else move left */
+    }
+    return key;
+}
+
+static ut_range_t isalnum_range[] = {
+    {0x30,0x39},{0x41,0x5A},{0x61,0x7A},{0xAA,0xAA},{0xB5,0xB5},{0xBA,0xBA},{0xC0,0xD6},{0xD8,0xF6},{0xF8,0xFF},
+};
+
+static ut_range_t isalpha_range[] = {
+    {0x41,0x5A},{0x61,0x7A},{0xAA,0xAA},{0xB5,0xB5},{0xBA,0xBA},{0xC0,0xD6},{0xD8,0xF6},{0xF8,0xFF},
+};
+
+static ut_range_t isblank_range[] = {
+    {0x09,0x09},{0x20,0x20},
+};
+
+static ut_range_t iscntrl_range[] = {
+    {0x00,0x1F},{0x7F,0x9F},
+};
+
+static ut_range_t isdigit_range[] = {
+    {0x30,0x39},
+};
+
+static ut_range_t isgraph_range[] = {
+    {0x21,0x7E},{0xA0,0xFF},
+};
+
+static ut_range_t islower_range[] = {
+     {0x61,0x7A},{0xB5,0xB5},{0xDF,0xF6},{0xF8,0xFF},
+};
+
+static ut_range_t isprint_range[] = {
+    {0x20,0x7E},{0xA0,0xFF},
+};
+
+static ut_range_t ispunct_range[] = {
+    {0x21,0x2F},{0x3A,0x40},{0x5B,0x60},{0x7B,0x7E},{0xA0,0xA9},{0xAB,0xB4},{0xB6,0xB9},{0xBB,0xBF},{0xD7,0xD7},{0xF7,0xF7},
+};
+
+static ut_range_t isspace_range[] = {
+    {0x09,0x0D},{0x20,0x20},
+};
+
+static ut_range_t isupper_range[] = {
+    {0x41,0x5A},{0xC0,0xD6},{0xD8,0xDE},
+};
+
+static ut_range_t isxdigit_range[] = {
+    {0x30,0x39},{0x41,0x46},{0x61,0x66},
+};
+
+static ut_map_t tolower_map[] = {
+    {0x41,0x61},{0x42,0x62},{0x43,0x63},{0x44,0x64},{0x45,0x65},{0x46,0x66},{0x47,0x67},{0x48,0x68},{0x49,0x69},{0x4A,0x6A},{0x4B,0x6B},{0x4C,0x6C},{0x4D,0x6D},{0x4E,0x6E},{0x4F,0x6F},{0x50,0x70},
+    {0x51,0x71},{0x52,0x72},{0x53,0x73},{0x54,0x74},{0x55,0x75},{0x56,0x76},{0x57,0x77},{0x58,0x78},{0x59,0x79},{0x5A,0x7A},{0xC0,0xE0},{0xC1,0xE1},{0xC2,0xE2},{0xC3,0xE3},{0xC4,0xE4},{0xC5,0xE5},
+    {0xC6,0xE6},{0xC7,0xE7},{0xC8,0xE8},{0xC9,0xE9},{0xCA,0xEA},{0xCB,0xEB},{0xCC,0xEC},{0xCD,0xED},{0xCE,0xEE},{0xCF,0xEF},{0xD0,0xF0},{0xD1,0xF1},{0xD2,0xF2},{0xD3,0xF3},{0xD4,0xF4},{0xD5,0xF5},
+    {0xD6,0xF6},{0xD8,0xF8},{0xD9,0xF9},{0xDA,0xFA},{0xDB,0xFB},{0xDC,0xFC},{0xDD,0xFD},{0xDE,0xFE},
+};
+
+static ut_map_t toupper_map[] = {
+    {0x61,0x41},{0x62,0x42},{0x63,0x43},{0x64,0x44},{0x65,0x45},{0x66,0x46},{0x67,0x47},{0x68,0x48},{0x69,0x49},{0x6A,0x4A},{0x6B,0x4B},{0x6C,0x4C},{0x6D,0x4D},{0x6E,0x4E},{0x6F,0x4F},{0x70,0x50},
+    {0x71,0x51},{0x72,0x52},{0x73,0x53},{0x74,0x54},{0x75,0x55},{0x76,0x56},{0x77,0x57},{0x78,0x58},{0x79,0x59},{0x7A,0x5A},{0xB5,0x39C},{0xE0,0xC0},{0xE1,0xC1},{0xE2,0xC2},{0xE3,0xC3},{0xE4,0xC4},
+    {0xE5,0xC5},{0xE6,0xC6},{0xE7,0xC7},{0xE8,0xC8},{0xE9,0xC9},{0xEA,0xCA},{0xEB,0xCB},{0xEC,0xCC},{0xED,0xCD},{0xEE,0xCE},{0xEF,0xCF},{0xF0,0xD0},{0xF1,0xD1},{0xF2,0xD2},{0xF3,0xD3},{0xF4,0xD4},
+    {0xF5,0xD5},{0xF6,0xD6},{0xF8,0xD8},{0xF9,0xD9},{0xFA,0xDA},{0xFB,0xDB},{0xFC,0xDC},{0xFD,0xDD},{0xFE,0xDE},{0xFF,0x178},
+};
+
+#define loop_range_check(check_func_, arr_data_) \
+    {\
+        int i; \
+        for (i = 0; i < 0xff; i++) \
+            mz_cunit_assert_int(MZ_TRUE, !!check_func_(i), !!range_check(i, arr_data_, (sizeof(arr_data_) / sizeof(arr_data_[0])))); \
+    }
+
+#define loop_map_check(check_func_, arr_data_) \
+    {\
+        int i; \
+        for (i = 0; i < 0xff; i++) \
+            mz_cunit_assert_int(MZ_TRUE, check_func_(i), map_get(i, arr_data_, (sizeof(arr_data_) / sizeof(arr_data_[0])))); \
+    }
+
+static void test_isalnum(void)
+{
+    loop_range_check(isalnum, isalnum_range);
+}
+
+static void test_isalpha(void)
+{
+    loop_range_check(isalpha, isalpha_range);
+}
+static void test_iscntrl(void)
+{
+    loop_range_check(iscntrl, iscntrl_range);
+}
+
+static void test_isdigit(void)
+{
+    loop_range_check(isdigit, isdigit_range);
+}
+
+static void test_isgraph(void)
+{
+    loop_range_check(isgraph, isgraph_range);
+}
+
+static void test_islower(void)
+{
+    loop_range_check(islower, islower_range);
+}
+
+static void test_isprint(void)
+{
+    loop_range_check(isprint, isprint_range);
+}
+
+static void test_ispunct(void)
+{
+    loop_range_check(ispunct, ispunct_range);
+}
+
+static void test_isspace(void)
+{
+    loop_range_check(isspace, isspace_range);
+}
+
+static void test_isupper(void)
+{
+    loop_range_check(isupper, isupper_range);
+}
+
+static void test_isxdigit(void)
+{
+    loop_range_check(isxdigit, isxdigit_range);
+}
+
+static void test_tolower(void)
+{
+    loop_map_check(tolower, tolower_map);
+}
+
+static void test_toupper(void)
+{
+    loop_map_check(toupper, toupper_map);
+}
+
+static void test_isblank(void)
+{
+    loop_range_check(isblank, isblank_range);
+}
+
+void unit_test_ctype()
+{
+    static item_unit_test_t tests[] = {
+        macro_item_unit(test_isalnum),
+        macro_item_unit(test_isalpha),
+        macro_item_unit(test_iscntrl),
+        macro_item_unit(test_isdigit),
+        macro_item_unit(test_isgraph),
+        macro_item_unit(test_islower),
+        macro_item_unit(test_isprint),
+        macro_item_unit(test_ispunct),
+        macro_item_unit(test_isspace),
+        macro_item_unit(test_isupper),
+        macro_item_unit(test_isxdigit),
+        macro_item_unit(test_tolower),
+        macro_item_unit(test_toupper),
+        macro_item_unit(test_isblank),
+    };
+
+    run_test(tests, sizeof(tests) / sizeof(tests[0]));
+}
+
+
+#endif
