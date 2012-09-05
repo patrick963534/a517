@@ -17,7 +17,7 @@ sametypesequence=tm
 
 #define min(a, b)   ((a) < (b)) ? (a) : (b)
 
-const char* data_path = "E:/data/other/stardict-stardict1.3-2.4.2/stardict-stardict1.3-2.4.2/";
+const char* data_path = "data/";
 const char* idx_file = "stardict1.3.idx";
 const char* dict_file = "stardict1.3.dict";
 const char* ifo_file = "stardict1.3.ifo";
@@ -67,7 +67,10 @@ static void parse_ifo_file()
     strcat(buf, ifo_file);
 
     if (NULL == (fp = fopen(buf, "r")))
+    {
+        printf("can NOT find file: %s\n", buf);
         return;
+    }
     
     while (!feof(fp))
     {
