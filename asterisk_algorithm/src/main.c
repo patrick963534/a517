@@ -87,7 +87,31 @@ static void print_map()
 
 static void print_path()
 {
-    
+    sl_list_t path;
+    node_t*   p;
+    int       count;
+
+    p = sl_list_last_entry(&close, node_t, e);
+    sl_list_init(&path);
+
+    while (p != NULL)
+    {
+        sl_list_add(&path, &p->e);
+        p = p->p;
+    }
+
+    printf("\n**********begin path**********\n");
+
+    count = 0;
+    sl_list_for_each_entry(p, &path, node_t, e)
+    {
+        printf("(%04x,%04x) ", p->x, p->y);
+
+        if (++count % map_width == 0)
+            printf("\n");
+    }
+
+    printf("\n**********finish path*********\n");
 }
 
 static node_t* create_node(int x, int y, int dx, int dy, node_t* p)

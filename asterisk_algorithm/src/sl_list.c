@@ -6,6 +6,17 @@ void sl_list_init(sl_list_t* head)
     head->prev = head;
 }
 
+void sl_list_add(sl_list_t* head, sl_list_t* node)
+{
+    sl_list_t *prev = head; 
+    sl_list_t *next = head->next; 
+
+    next->prev = node; 
+    node->next = next;
+    node->prev = prev;
+    prev->next = node;
+}
+
 void sl_list_add_tail(sl_list_t* head, sl_list_t* node)
 {
     sl_list_t *prev = head->prev; 
