@@ -148,7 +148,7 @@ static void add_neighbor_node(node_t* cur, int dx, int dy)
 
 static void search(int sx, int sy, int dx, int dy)
 {
-    node_t *p, *n;
+    node_t *p;
     int count = 0;
 
     printf("\n***************start path searching***************\n");
@@ -159,22 +159,23 @@ static void search(int sx, int sy, int dx, int dy)
     p = create_node(sx, sy, dx, dy, NULL);   
     sl_list_add_tail(&open, &p->e);
 
-    sl_list_for_each_entry_safe(p, n, &open, node_t, e)
+    while (!sl_list_empty(&open))
     {
-        count++;
+        p = sl_list_first_entry(&open, node_t, e);
+
         printf("(%02d,%02d) ", p->x, p->y);
-        if (count % map_width == 0)
+        if (++count % map_width == 0)
             printf("\n");
 
         add_neighbor_node(p, dx, dy);
 
         if (p->x == dx && p->y == dy)
             break;
-
-        n = sl_list_next_entry(p, node_t, e);
-
+        
+        sl_list_remove(&p->e);
+        sl_list_add_tail(&close, &p->e);
     }
-    
+
     printf("\n***************finish path searching**************\n");
 }
 
