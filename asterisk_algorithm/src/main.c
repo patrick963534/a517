@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "sl_list.h"
 
 /*
@@ -50,7 +51,7 @@ typedef struct node_t
     struct node_t*  p;  /* parent */
 } node_t;
 
-static int map_data[] = {
+static int map_data_no_block[] = {
     0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
     0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
     0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
@@ -63,22 +64,36 @@ static int map_data[] = {
     0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
 };
 
+static int map_data[] = {
+    0x1000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x4000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x4000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x4000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x4000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x1000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x1000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+    0x1000, 0x1000, 0x1000, 0x1000, 0x4000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 0x1000, 
+};
+
 static int map_width  = 12;
 static int map_height = 10;
+
+static int *map;
 
 static sl_list_t open;
 static sl_list_t close;
 
 static void print_map()
 {
-    int *map = map_data;
     int i, j;
 
     for (j = 0; j < map_height; j++)
     {
         for (i = 0; i < map_width; i++)
         {
-            printf("%04x, ", map[i + j * map_height]);
+            printf("%04x, ", map[i + j * map_width]);
         }
 
         printf("\n");
@@ -105,7 +120,7 @@ static void print_path()
     count = 0;
     sl_list_for_each_entry(p, &path, node_t, e)
     {
-        printf("(%04x,%04x) ", p->x, p->y);
+        printf("(%02d,%02d) ", p->x, p->y);
 
         if (++count % map_width == 0)
             printf("\n");
@@ -177,6 +192,12 @@ static void add_neighbor_node(node_t* cur, int dx, int dy)
             int x = cur->x + i;
             int y = cur->y + j;
 
+            if (x < 0 || y < 0 || x >= map_width || y >= map_height)
+                continue;
+
+            if (map[x + y * map_width] != 0x1000)
+                continue;
+
             if (contains(&open, x, y) || contains(&close, x, y))
                 continue;
 
@@ -190,6 +211,12 @@ static void search(int sx, int sy, int dx, int dy)
 {
     node_t *p;
     int count = 0;
+
+    if (sx < 0 || sx >= map_width || sy < 0 || sy >= map_height ||
+        dx < 0 || dx >= map_width || dy < 0 || dy >= map_height)
+    {
+        assert(!"Position is out of bound.");
+    }
 
     printf("\n***************start path searching***************\n");
 
@@ -220,9 +247,11 @@ static void search(int sx, int sy, int dx, int dy)
 }
 
 int main()
-{
+{ 
+    map = map_data;
+
     print_map();
-    search(5, 5, 8, 10);
+    search(1, 1, 8, 9);
     print_path();
 
     return 0;
