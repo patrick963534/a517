@@ -112,7 +112,7 @@ static node_t* create_node(int x, int y, int dx, int dy, node_t* p)
     return me;
 }
 
-static const node_t* find(sl_list_t* head, int x, int y)
+static const node_t* contains(sl_list_t* head, int x, int y)
 {
     node_t *p;
 
@@ -137,7 +137,7 @@ static void add_neighbor_node(node_t* cur, int dx, int dy)
             int x = cur->x + i;
             int y = cur->y + j;
 
-            if (find(&open, x, y) || find(&close, x, y))
+            if (contains(&open, x, y) || contains(&close, x, y))
                 continue;
 
             p = create_node(x, y, dx, dy, cur);
@@ -149,6 +149,7 @@ static void add_neighbor_node(node_t* cur, int dx, int dy)
 static void search(int sx, int sy, int dx, int dy)
 {
     node_t *p, *n;
+    int count = 0;
 
     printf("\n***************start path searching***************\n");
 
@@ -160,12 +161,18 @@ static void search(int sx, int sy, int dx, int dy)
 
     sl_list_for_each_entry_safe(p, n, &open, node_t, e)
     {
+        count++;
         printf("(%02d,%02d) ", p->x, p->y);
+        if (count % map_width == 0)
+            printf("\n");
 
         add_neighbor_node(p, dx, dy);
 
         if (p->x == dx && p->y == dy)
             break;
+
+        n = sl_list_next_entry(p, node_t, e);
+
     }
     
     printf("\n***************finish path searching**************\n");

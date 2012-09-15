@@ -17,8 +17,17 @@ void sl_list_add_tail(sl_list_t* head, sl_list_t* node);
 #define sl_list_entry(ptr, type, member) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
 
+#define sl_list_empty(head) \
+    ((head)->next == (head))
+
 #define sl_list_next_entry(ptr, type, member) \
-    sl_list_entry(pos->member.prev, type, member)
+    sl_list_entry((ptr)->member.next, type, member)
+
+#define sl_list_first_entry(head, type, member) \
+    sl_list_entry((head)->next, type, member)
+
+#define sl_list_last_entry(head, type, member) \
+    sl_list_entry((head)->prev, type, member)
 
 /*
  @pos:      each item to pointer of @type.
