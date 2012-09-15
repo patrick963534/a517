@@ -125,6 +125,22 @@ static const node_t* contains(sl_list_t* head, int x, int y)
     return NULL;
 }
 
+static void sort_insert(sl_list_t* head, node_t* node)
+{
+    node_t *p;
+
+    sl_list_for_each_entry(p, head, node_t, e)
+    {
+        if (node->f < p->f)
+        {
+            sl_list_insert_before(&p->e, &node->e);
+            return;
+        }
+    }
+
+    sl_list_add_tail(head, &node->e);
+}
+
 static void add_neighbor_node(node_t* cur, int dx, int dy)
 {
     node_t *p;
@@ -141,7 +157,7 @@ static void add_neighbor_node(node_t* cur, int dx, int dy)
                 continue;
 
             p = create_node(x, y, dx, dy, cur);
-            sl_list_add_tail(&open, &p->e);
+            sort_insert(&open, p);
         }
     }
 }
@@ -169,11 +185,11 @@ static void search(int sx, int sy, int dx, int dy)
 
         add_neighbor_node(p, dx, dy);
 
-        if (p->x == dx && p->y == dy)
-            break;
-        
         sl_list_remove(&p->e);
         sl_list_add_tail(&close, &p->e);
+
+        if (p->x == dx && p->y == dy)
+            break;
     }
 
     printf("\n***************finish path searching**************\n");

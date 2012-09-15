@@ -14,6 +14,8 @@ typedef struct sl_list_t
 void sl_list_init(sl_list_t* head);
 void sl_list_add_tail(sl_list_t* head, sl_list_t* node);
 void sl_list_remove(sl_list_t* node);
+void sl_list_insert_after(sl_list_t* pos, sl_list_t* node);
+void sl_list_insert_before(sl_list_t* pos, sl_list_t* node);
 
 #define sl_list_entry(ptr, type, member) \
     ((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
