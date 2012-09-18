@@ -1,0 +1,1 @@
+gcc main.c -lGL -lGLU -lX11 -lXxf86vm
